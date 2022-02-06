@@ -127,3 +127,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Poetry
+#   The official recommendation of the poetry maintainers is to commit the lockfile if you develop
+#   a deployable application (as opposed to a library)
+poetry.lock
+
+# Project related additional files
+additional_files/
+
+# PyCharm files
+.idea/
