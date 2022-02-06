@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "secret-santa"
+version = "0.1.0"
+description = "A Secret Santa game which randomly assigns and notifies people to whom they should give a gift using Twilio's messaging API"
+license = "Unlicense"
+authors = ["Fawzi Abo Shkara <fawzi.aboshkara@gmail.com>"]
+#readme = "README.md"
+homepage = "https://github.com/FawziAS/secret-santa"
+repository = "https://github.com/FawziAS/secret-santa.git"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = "^0.19.2"
+twilio = "^7.5.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0.0"
+black = "^22.1.0"
+isort = "^5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black] # The black formatter config
+line-length = 100
+
+[tool.isort] # isort config
+profile = "black"
+line_length = 100
+src_paths = ["secret_santa", "tests"]
+skip_gitignore = true
