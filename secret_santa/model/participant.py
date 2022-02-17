@@ -22,7 +22,7 @@ class Participant:
         Custom equals method for this data class to check if two participants are identical.
 
         Args:
-            other: The other participant to check against self
+            other: The other participant to check against ``self``.
 
         Returns:
             True if all the properties of ``self`` and ``other`` match, False otherwise.
