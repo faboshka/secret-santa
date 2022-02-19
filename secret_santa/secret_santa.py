@@ -149,6 +149,7 @@ class SecretSanta:
             response = self.messaging_client.send_message(
                 SecretSanta.get_secret_santa_message(participant, recipient),
                 participant.phone_number,
+                dry_run=True,
             )
             logger.info(f"Message sent to: {participant} - {str(response)}")
         return 0
