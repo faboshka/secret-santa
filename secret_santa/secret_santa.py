@@ -137,6 +137,7 @@ class SecretSanta:
 
         Returns:
             0 in case everything runs successfully. Non-Zero code otherwise.
+
         """
         self.logger.info("Running the Secret Santa allocator")
 
@@ -145,11 +146,12 @@ class SecretSanta:
         # Go over the participants and recipients in the participants and participants_derangement lists respectively,
         # and send the participant a customized message
         for participant, recipient in zip(self.participants, participants_derangement):
-            self.messaging_client.send_message(
+            response = self.messaging_client.send_message(
                 SecretSanta.get_secret_santa_message(participant, recipient),
                 participant.phone_number,
+                dry_run=True,
             )
-            logger.info(f"Message sent to: {participant}")
+            logger.info(f"Message sent to: {participant} - {str(response)}")
         return 0
 
 
