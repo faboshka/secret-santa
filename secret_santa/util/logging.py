@@ -1,9 +1,24 @@
 import logging
-from typing import List
+from typing import Dict, List
 
 
 class LoggingUtils:
-    """A class aggregating all the logging utilities needed (mostly provided as static methods)."""
+    """
+    A class aggregating all the logging utilities needed (mostly provided as static methods).
+
+    Attributes:
+        logging_levels: Mapping of the program's supported logging levels to the actual logger levels' values.
+
+    """
+
+    logging_levels: Dict[str, int] = {
+        "critical": logging.CRITICAL,
+        "error": logging.ERROR,
+        "warn": logging.WARNING,
+        "warning": logging.WARNING,
+        "info": logging.INFO,
+        "debug": logging.DEBUG,
+    }
 
     class CustomLogFormatter(logging.Formatter):
         """A super class of ``logging.Formatter`` solemnly for custom log message formatting."""
@@ -51,8 +66,7 @@ class LoggingUtils:
         """
         # Retrieve the logger
         logger = logging.getLogger(name)
-        # Set the logger's level
-        logger.setLevel(logging.DEBUG)
+        # The logger's main logging level will be set by the root logger
 
         # If no handlers has been passed, set handlers to be an empty list
         if not handlers:
