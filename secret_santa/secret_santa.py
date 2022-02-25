@@ -1,13 +1,17 @@
 import copy
 import json
+import logging
 import os
 import random
+import time
 from typing import List
 
+import pyfiglet
 from dotenv import load_dotenv
 
 from model.participant import Participant
 from twilio_messaging_service import TwilioMessagingService
+from util.arg_parser import ArgParserUtils
 from util.file import FileUtils
 from util.logging import LoggingUtils
 from util.misc import MiscUtils
@@ -25,16 +29,27 @@ class SecretSanta:
         logger (logging.Logger): The class logger.
         participants (List[Participant]): A list of the Secret Santa participants.
         messaging_client (TwilioMessagingService): An instance of the messaging client.
+        show_arrangement (bool): If ``True``, the relevant method will print the arrangement once it's calculated.
+        dry_run (bool): If ``True``, the class methods will run a dry run (not execute some things,
+            e.g. it won't actually send a message).
 
     """
 
-    def __init__(self, participants_json_path: str = None) -> None:
+    def __init__(
+        self,
+        participants_json_path: str = None,
+        show_arrangement: bool = False,
+        *,
+        dry_run: bool,
+    ) -> None:
         """
         Initialize the Secret Santa game class.
 
         Args:
             participants_json_path: Path to the "Secret Santa" participants JSON.
                 If omitted, will try to look for the file at ``{project_root}/participants.json``.
+            show_arrangement: Whether the arrangement will be shown once it's calculated.
+            dry_run: If ``True``, the class methods will run a dry run (not execute some things).
 
         """
         # Set up the class logger
@@ -56,7 +71,11 @@ class SecretSanta:
         self.logger.info(f"A total of {len(self.participants)} participants have been loaded")
 
         # Initialize the Twilio messaging client
-        self.messaging_client = TwilioMessagingService()
+        self.messaging_client = TwilioMessagingService(alphanumeric_id="SecretSanta")
+        # Set whether the arrangement will be shown once it's decided
+        self.show_arrangement = show_arrangement
+        # Set whether the class methods should run a dry run or not
+        self.dry_run = dry_run
 
         self.logger.info("SecretSanta class initialized")
 
@@ -105,6 +124,21 @@ class SecretSanta:
         return recipients
 
     @staticmethod
+    def get_participant_message_name(participant: Participant) -> str:
+        """
+        Get the name of the participant as it'll appear in the message to be sent.
+        If the participant has a nickname, return it, otherwise, return the first part of their full name.
+
+        Args:
+            participant: The participant's details.
+
+        Returns:
+            The name of the participant as it'll appear in the message to be sent.
+
+        """
+        return participant.nickname if participant.nickname else participant.full_name.split()[0]
+
+    @staticmethod
     def get_secret_santa_message(participant: Participant, recipient: Participant) -> str:
         """
         Construct a message based on the participant and recipient's data.
@@ -118,13 +152,9 @@ class SecretSanta:
 
         """
         # Participant name to use
-        participant_msg_name = (
-            participant.nickname if participant.nickname else participant.full_name.split()[0]
-        )
+        participant_msg_name = SecretSanta.get_participant_message_name(participant)
         # Recipient name to use
-        recipient_msg_name = (
-            recipient.nickname if recipient.nickname else recipient.full_name.split()[0]
-        )
+        recipient_msg_name = SecretSanta.get_participant_message_name(recipient)
         # Construct message
         message_body = (
             f"Hello {participant_msg_name},\n" f"You'll be {recipient_msg_name}'s Secret Santa!"
@@ -146,12 +176,20 @@ class SecretSanta:
         # Go over the participants and recipients in the participants and participants_derangement lists respectively,
         # and send the participant a customized message
         for participant, recipient in zip(self.participants, participants_derangement):
+            if self.show_arrangement:
+                self.logger.info(
+                    f"{SecretSanta.get_participant_message_name(participant)} -> "
+                    f"{SecretSanta.get_participant_message_name(recipient)}"
+                )
             response = self.messaging_client.send_message(
                 SecretSanta.get_secret_santa_message(participant, recipient),
                 participant.phone_number,
-                dry_run=True,
+                dry_run=self.dry_run,
             )
-            logger.info(f"Message sent to: {participant} - {str(response)}")
+            logger.info(
+                f"Message sent to: {participant}, "
+                f"Status: {response.status if not self.dry_run else str(response)}"
+            )
         return 0
 
 
@@ -195,15 +233,20 @@ def main() -> int:
         Zero in case the ``SecretSanta`` class is initialized and run as should be, non-Zero code otherwise.
 
     """
+    secret_santa_figlet = pyfiglet.figlet_format("Secret  Santa")
+    print(secret_santa_figlet)
+    time.sleep(0.5)
+    # Parse the provided arguments
+    args = ArgParserUtils.parse_args()
+    # Get the root logger and update its level to set the main logging level
+    logging.getLogger().setLevel(LoggingUtils.logging_levels.get(args.logging_level))
     # Load the environment
-    load_env()
+    load_env(args.env_path)
     # Initialize the Secret Santa module and run it to send a message to the participants
     return SecretSanta(
-        participants_json_path=os.path.join(
-            PathUtils.get_project_root(),
-            "additional_files",
-            "participants.json",
-        ),
+        participants_json_path=args.participants_path,
+        show_arrangement=args.show_arrangement,
+        dry_run=args.dry_run,
     ).run()
 
 
