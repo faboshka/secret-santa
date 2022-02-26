@@ -5,18 +5,18 @@ The `secret-santa` package is a _Secret Santa_ 🎅🎄 game which randomly assi
 <details>
   <summary>Table of Contents</summary>
 
-  1. [Why?](#Why?)
-     1. [But WHY is it over-engineered?](#But WHY is it over-engineered?)
-  2. [Usage](#Usage)
-     1. [Prerequisites](#Prerequisites)
-     2. [Configs and Environment Needed](#Configs and Environment Needed)
-     3. [Installing the Dependencies](#Installing the Dependencies)
-     4. [Running](#Running)
-  3. [Future Plans](#Future Plans)
-  4. [Contributing](#Contributing)
-     1. [So... How can I contribute?](#So... How can I contribute?)
-  5. [License](#License)
-  6. [Who](#Who)
+  1. [Why?](#why)
+     1. [But WHY is it over-engineered?](#but-why-is-it-over-engineered)
+  2. [Usage](#usage)
+     1. [Prerequisites](#prerequisites)
+     2. [Configs and Environment Needed](#configs-and-environment-needed)
+     3. [Installing the Dependencies](#installing-the-dependencies)
+     4. [Running](#running)
+  3. [Future Plans](#future-plans)
+  4. [Contributing](#contributing)
+     1. [So... How can I contribute?](#so-how-can-i-contribute)
+  5. [License](#license)
+  6. [Who](#who)
 </details>
 
 ## Why?
@@ -66,7 +66,7 @@ To run this package, you need to have:
     {
       "full_name": "Name 1",
       "phone_number": "+123456789",
-      "nickname": ""
+      "nickname": "N1"
     },
     {
       "full_name": "Name 2",
