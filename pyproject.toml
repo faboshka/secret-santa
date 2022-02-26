@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A Secret Santa game which randomly assigns and notifies people to whom they should give a gift using Twilio's messaging API"
 license = "Unlicense"
 authors = ["Fawzi Abo Shkara <fawzi.aboshkara@gmail.com>"]
-#readme = "README.md"
+readme = "README.md"
 homepage = "https://github.com/FawziAS/secret-santa"
 repository = "https://github.com/FawziAS/secret-santa.git"
 
