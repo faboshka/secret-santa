@@ -1,5 +1,4 @@
 import argparse
-from argparse import Namespace
 from typing import List
 
 from .logging import LoggingUtils
@@ -37,12 +36,12 @@ class ArgParserUtils:
             return argparse.HelpFormatter._split_lines(self, text, width)
 
     @staticmethod
-    def parse_args() -> Namespace:
+    def get_secret_santa_argument_parser() -> argparse.ArgumentParser:
         """
-        Parse the program's arguments.
+        Initialize an instance of the secret santa ``argparser``.
 
         Returns:
-            The parsed arguments in a namespace.
+            The argument parser constructed.
 
         """
         # TODO: Improve the argument parser by adding more arguments
@@ -92,4 +91,4 @@ class ArgParserUtils:
             choices=LoggingUtils.logging_levels,
             help='set the main logging level of the program loggers (Defaults to "info")',
         )
-        return parser.parse_args()
+        return parser

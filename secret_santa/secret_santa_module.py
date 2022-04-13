@@ -8,14 +8,16 @@ from typing import List
 
 import pyfiglet
 from dotenv import load_dotenv
+from pyfiglet import FigletString
 
-from model.participant import Participant
-from twilio_messaging_service import TwilioMessagingService
-from util.arg_parser import ArgParserUtils
-from util.file import FileUtils
-from util.logging import LoggingUtils
-from util.misc import MiscUtils
-from util.path import PathUtils
+from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
+from secret_santa.model.participant import Participant
+from secret_santa.twilio_messaging_service import TwilioMessagingService
+from secret_santa.util.arg_parser import ArgParserUtils
+from secret_santa.util.file import FileUtils
+from secret_santa.util.logging import LoggingUtils
+from secret_santa.util.misc import MiscUtils
+from secret_santa.util.path import PathUtils
 
 # Set up the main logger
 logger = LoggingUtils.get_logger("main")
@@ -217,7 +219,7 @@ def load_env(dotenv_path: str = None) -> None:
 
     # Make sure the needed Twilio configuration environment variables are provided
     logger.debug("Asserting Twilio configuration has been provided")
-    required_env_vars = ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_NUMBER"]
+    required_env_vars = [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER]
     if not all([os.getenv(env) for env in required_env_vars]):
         raise SystemExit(
             f"One or more of the environment variables needed ({required_env_vars}) has not been passed."
@@ -233,11 +235,12 @@ def main() -> int:
         Zero in case the ``SecretSanta`` class is initialized and run as should be, non-Zero code otherwise.
 
     """
-    secret_santa_figlet = pyfiglet.figlet_format("Secret  Santa")
+    secret_santa_figlet: FigletString = pyfiglet.figlet_format("Secret  Santa")
     print(secret_santa_figlet)
     time.sleep(0.5)
     # Parse the provided arguments
-    args = ArgParserUtils.parse_args()
+    parser = ArgParserUtils.get_secret_santa_argument_parser()
+    args = parser.parse_args()
     # Get the root logger and update its level to set the main logging level
     logging.getLogger().setLevel(LoggingUtils.logging_levels.get(args.logging_level))
     # Load the environment
