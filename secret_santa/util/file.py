@@ -19,7 +19,7 @@ class FileUtils:
             new_file.write(content)
 
     @staticmethod
-    def read_file(file_name: str, read_line_by_line: bool = False) -> str | List[str]:
+    def read_file(file_name: str | Path, read_line_by_line: bool = False) -> str | List[str]:
         """
         Read the contents of the file at ``file_name``.
 

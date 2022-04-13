@@ -1,10 +1,11 @@
 import os
 import re
 
-import twilio.rest.api.v2010.account.message
 from twilio.rest import Client
+from twilio.rest.api.v2010.account.message import MessageInstance
 
-from util.logging import LoggingUtils
+from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
+from secret_santa.util.logging import LoggingUtils
 
 
 class TwilioMessagingService:
@@ -64,7 +65,7 @@ class TwilioMessagingService:
             )
 
         # Initialize the Twilio client
-        self.twilio_client = Client(twilio_account_sid, twilio_auth_token)
+        self.twilio_client = Client(username=twilio_account_sid, password=twilio_auth_token)
 
         self.logger.debug("Twilio client initialized")
 
@@ -79,14 +80,14 @@ class TwilioMessagingService:
         """
         self.logger.debug("Loading Twilio configuration")
         # Load the environment variables needed
-        twilio_account_sid = os.getenv("TWILIO_ACCOUNT_SID")
-        twilio_auth_token = os.getenv("TWILIO_AUTH_TOKEN")
-        twilio_number = os.getenv("TWILIO_NUMBER")
+        twilio_account_sid = os.getenv(TWILIO_ACCOUNT_SID)
+        twilio_auth_token = os.getenv(TWILIO_AUTH_TOKEN)
+        twilio_number = os.getenv(TWILIO_NUMBER)
 
         # Assert the environment variables needed are present
         assert all([twilio_account_sid, twilio_auth_token, twilio_number]), (
-            "Required environment variables TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN "
-            "or TWILIO_NUMBER missing."
+            f"Required environment variables {TWILIO_ACCOUNT_SID} or {TWILIO_AUTH_TOKEN} "
+            f"or {TWILIO_NUMBER} missing."
         )
 
         return twilio_number, twilio_account_sid, twilio_auth_token
@@ -97,7 +98,7 @@ class TwilioMessagingService:
         to: str,
         *,
         dry_run: bool,
-    ) -> twilio.rest.api.v2010.account.message.MessageInstance | str:
+    ) -> MessageInstance | str:
         """
         Send a text message with the string specified in the ``body`` to the number specified in ``to``.
 
