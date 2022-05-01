@@ -10,7 +10,7 @@ repository = "https://github.com/FawziAS/secret-santa.git"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-python-dotenv = "^0.19.2"
+python-dotenv = "^0.20.0"
 twilio = "^7.5.1"
 pyfiglet = "^0.8.post1"
 
@@ -34,3 +34,14 @@ profile = "black"
 line_length = 100
 src_paths = ["secret_santa", "tests"]
 skip_gitignore = true
+
+[tool.taskipy.variables]
+all_paths = "secret_santa/ tests/"
+sources_only = "secret_santa/"
+tests_only = "tests/"
+
+[tool.taskipy.tasks]
+test = { cmd = "pytest -v {tests_only}", use_vars = true, help = "run all tests." }
+isort = { cmd = "isort {all_paths}", use_vars = true, help = "run isort on sources and tests." }
+black = { cmd = "black {all_paths}", use_vars = true, help = "run black on sources and tests." }
+format = { cmd = "task isort && task black", help = "reformat code" }
