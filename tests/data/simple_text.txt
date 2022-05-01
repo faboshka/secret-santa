@@ -1,0 +1,2 @@
+This is a simple text file which will be used to test the read file function.
+Let's hope it'll work :)

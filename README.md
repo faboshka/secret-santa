@@ -2,6 +2,8 @@
 
 The `secret-santa` package is a _Secret Santa_ 🎅🎄 game which randomly assigns and notifies people to whom they should give a gift using _Twilio_'s messaging API.
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 <details>
   <summary>Table of Contents</summary>
 
@@ -150,7 +152,7 @@ I can think of some things to add, such as:
   * `--custom-message` to allow for customizing the message to be sent to the user's liking.
 * Wait for some time, check the _message status_ if it was still queued, and resend it in case it failed to send / wasn't delivered.
 * Allow for more messaging methods other than Twilio (including but not limited to: Email messaging, another SMS service, etc.)
-* Add unit / functional testing.
+* ~~Add unit / functional testing.~~ Done :)
 
 If ever comes a time in which I'll be in a similar state to the one I was in writing this code, I may add these, but I don't see myself doing a lot with this package in the near future, however, if you like it and would like to add something, feel free to contribute.
 
@@ -168,7 +170,7 @@ You could contribute code to the repository in many ways:
 
 1. Fork it.
 2. Create your feature branch, running the command `git checkout -b my-new-feature`.
-3. The code isn't currently tested, but adding some tests for the changes you added is advisable.
+3. Make sure the tests pass as expected, and add some tests covering your changes.
 4. Document all functions and methods by the [`Google style docstrings`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings)
 5. Commit your changes, `git commit -m "Added some feature"`.
 6. Push to the branch `git push origin my-new-feature`.
