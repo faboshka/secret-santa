@@ -69,7 +69,7 @@ class SecretSanta:
         ), f"Could not find the participants JSON file @ {participants_json_path}"
 
         self.logger.debug("Loading the participants")
-        self.participants = self.load_participants(participants_json_path)
+        self.participants = self.load_participants(participants_json_path=participants_json_path)
         self.logger.info(f"A total of {len(self.participants)} participants have been loaded")
 
         # Initialize the Twilio messaging client
@@ -138,7 +138,11 @@ class SecretSanta:
             The name of the participant as it'll appear in the message to be sent.
 
         """
-        return participant.nickname if participant.nickname else participant.full_name.split()[0]
+        return (
+            participant.nickname
+            if participant.nickname
+            else participant.full_name.strip().split()[0]
+        )
 
     @staticmethod
     def get_secret_santa_message(participant: Participant, recipient: Participant) -> str:
@@ -195,27 +199,34 @@ class SecretSanta:
         return 0
 
 
-def load_env(dotenv_path: str = None) -> None:
+def load_env(dotenv_path: str = None, override_system: bool = False) -> None:
     """
     Check whether the environment has been configured correctly and the secrets needed has been passed.
 
     Args:
         dotenv_path: Custom path to the .env file. If omitted, will try to look for the ``{project_root}/.env`` file.
             (Defaults to None).
+        override_system: Determine whether to override the system's environment variables if they're encountered in the
+            files. (Defaults to False)
 
     """
     logger.debug("Loading the environment")
     # Read the .env file if exists and load it to the environment
     if not dotenv_path:
         logger.warning("No path to the .env file has been passed")
-        dotenv_path = os.path.join(PathUtils.get_project_root(), ".env")
+        root_dot_env = os.path.join(PathUtils.get_project_root(), ".env")
         logger.debug("Attempting to look for a .env file at root level")
-    (
-        logger.info(f"Reading .env file at: {dotenv_path}")
-        if os.path.exists(dotenv_path)
-        else logger.warning(f"No .env file could be found at: {dotenv_path}")
-    )
-    load_dotenv(dotenv_path=dotenv_path)  # This won't fail in case the file does not exist
+
+        if os.path.exists(dotenv_path):
+            logger.info(f"Reading .env file at: {dotenv_path}")
+            dotenv_path = root_dot_env
+        else:
+            logger.warning(f"No .env file could be found at: {dotenv_path}")
+            # load_dotenv won't fail in case the file does not exist and setting it to an empty
+            # string would prevent it from looking for a `.env` file.
+            dotenv_path = ""
+
+    load_dotenv(dotenv_path=dotenv_path, override=override_system)
 
     # Make sure the needed Twilio configuration environment variables are provided
     logger.debug("Asserting Twilio configuration has been provided")

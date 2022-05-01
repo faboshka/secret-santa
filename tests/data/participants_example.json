@@ -1,0 +1,16 @@
+[
+  {
+    "full_name": "John Doe",
+    "phone_number": "+1234567890",
+    "nickname": "Johnny"
+  },
+  {
+    "full_name": "Jane Doe",
+    "phone_number": "+0987654321"
+  },
+  {
+    "full_name": "Richard Roe",
+    "phone_number": "+1234509876",
+    "nickname": "Rich"
+  }
+]
