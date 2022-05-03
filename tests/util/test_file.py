@@ -20,7 +20,7 @@ def tests_temp_directory(tests_directory: Path) -> Path:
 @pytest.mark.parametrize("split_lines", [False, True])
 def test_read_file(test_file_path: Path, split_lines: bool):
     file_text = (
-        f"This is a simple text file which will be used to test the read file function.{os.linesep}"
+        f"This is a simple text file which will be used to test the read file function.\n"
         f"Let's hope it'll work :)"
     )
     file_text_line_by_line = file_text.splitlines(keepends=True)
