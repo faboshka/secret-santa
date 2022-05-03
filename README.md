@@ -2,6 +2,7 @@
 
 The `secret-santa` package is a _Secret Santa_ 🎅🎄 game which randomly assigns and notifies people to whom they should give a gift using _Twilio_'s messaging API.
 
+[![Test Workflow on Main](https://github.com/FawziAS/secret-santa/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/FawziAS/secret-santa/actions/workflows/test.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 <details>
