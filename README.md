@@ -185,4 +185,4 @@ In the spirit of Christmas, I decided publish this code under the [Unlicense Lic
 
 ## Who
 
-The `secret-santa` project was originally developed by [Fawzi Abo Shkara](https://github.com/FawziAS/).
+The `secret-santa` project was originally developed by [Fawzi Abo Shkara](https://github.com/faboshka/).
