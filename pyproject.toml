@@ -10,8 +10,8 @@ repository = "https://github.com/FawziAS/secret-santa.git"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-python-dotenv = "^0.20.0"
-twilio = "^7.5.1"
+python-dotenv = "^0.21.0"
+twilio = "^7.15.4"
 pyfiglet = "^0.8.post1"
 
 [tool.poetry.dev-dependencies]
