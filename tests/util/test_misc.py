@@ -1,5 +1,3 @@
-from typing import List
-
 import pytest
 
 from secret_santa.util.misc import MiscUtils, T
@@ -15,7 +13,7 @@ from secret_santa.util.misc import MiscUtils, T
         (["str1", "str2", "str3", "str4", "str5"], ["str5", "str4", "str3", "str2", "str1"], False),
     ],
 )
-def test_is_derangement_valid_input(list1: List[T], list2: List[T], is_derangement: bool):
+def test_is_derangement_valid_input(list1: list[T], list2: list[T], is_derangement: bool):
     assert MiscUtils.is_derangement(list1, list2) == is_derangement, (
         f"The second list permutation should{'' if is_derangement else ' not'} be a derangement of the first list, "
         f"but MiscUtils.is_derangement() shows otherwise."
@@ -30,7 +28,7 @@ def test_is_derangement_valid_input(list1: List[T], list2: List[T], is_derangeme
         ([], [1, 2, 3, 4, 5]),
     ],
 )
-def test_is_derangement_fails_on_empty_list(list1: List[T], list2: List[T]):
+def test_is_derangement_fails_on_empty_list(list1: list[T], list2: list[T]):
     with pytest.raises(AssertionError) as exception_info:
         MiscUtils.is_derangement(list1, list2)
     # fmt: off
@@ -47,7 +45,7 @@ def test_is_derangement_fails_on_empty_list(list1: List[T], list2: List[T]):
         ([1, 2, 3, 4, 5], [4, 3, 2, 1]),
     ],
 )
-def test_is_derangement_fails_on_lists_of_different_length(list1: List[T], list2: List[T]):
+def test_is_derangement_fails_on_lists_of_different_length(list1: list[T], list2: list[T]):
     with pytest.raises(AssertionError) as exception_info:
         MiscUtils.is_derangement(list1, list2)
     assert "The two lists must be of the same size to qualify for a derangement check" in str(
@@ -61,7 +59,7 @@ def test_is_derangement_fails_on_lists_of_different_length(list1: List[T], list2
         ([1, 2, 3, 4, 5], ["str5", "str4", "str3", "str2", "str1"]),
     ],
 )
-def test_is_derangement_fails_on_lists_of_different_types(list1: List[T], list2: List[T]):
+def test_is_derangement_fails_on_lists_of_different_types(list1: list[T], list2: list[T]):
     with pytest.raises(AssertionError) as exception_info:
         MiscUtils.is_derangement(list1, list2)
     assert (

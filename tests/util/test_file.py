@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -17,20 +16,13 @@ def tests_temp_directory(tests_directory: Path) -> Path:
     return tests_directory / "data" / "temp"
 
 
-@pytest.mark.parametrize("split_lines", [False, True])
-def test_read_file(test_file_path: Path, split_lines: bool):
+def test_read_file(test_file_path: Path):
     file_text = (
         f"This is a simple text file which will be used to test the read file function.\n"
         f"Let's hope it'll work :)"
     )
-    file_text_line_by_line = file_text.splitlines(keepends=True)
-    read_file_lines: str | List[str] = FileUtils.read_file(
-        file_name=test_file_path,
-        read_line_by_line=split_lines,
-    )
-    assert read_file_lines == (
-        file_text_line_by_line if split_lines else file_text
-    ), "The file contents read does not match the expected content."
+    read_file: str = FileUtils.read_file(file_name=test_file_path)
+    assert read_file == file_text, "The file contents read does not match the expected content."
 
 
 def test_create_file(tests_temp_directory: Path):

@@ -21,6 +21,7 @@ isort = "^5.10.1"
 taskipy = "^1.10.1"
 pytest-lazy-fixture = "^0.6.3"
 pytest-mock = "^3.7.0"
+mypy = "^0.991"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -35,6 +36,25 @@ line_length = 100
 src_paths = ["secret_santa", "tests"]
 skip_gitignore = true
 
+[tool.mypy]
+pretty = true
+show_error_context = true
+
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+disallow_any_unimported = true
+disallow_subclassing_any = true
+
+warn_return_any = true
+warn_unused_ignores = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["pyfiglet", "twilio.rest.*"]
+ignore_missing_imports = true
+
 [tool.taskipy.variables]
 all_paths = "secret_santa/ tests/"
 sources_only = "secret_santa/"
@@ -44,6 +64,7 @@ tests_only = "tests/"
 test = { cmd = "pytest -v {tests_only}", use_vars = true, help = "run all tests." }
 isort = { cmd = "isort {all_paths}", use_vars = true, help = "run isort on sources and tests." }
 black = { cmd = "black {all_paths}", use_vars = true, help = "run black on sources and tests." }
+mypy = { cmd = "mypy {sources_only}", use_vars = true, help = "run mypy on sources." }
 format = { cmd = "task isort && task black", help = "reformat code" }
 
 isort_check = { cmd = "task isort --check-only", help = "run task isort in check mode (no writing back)." }

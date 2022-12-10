@@ -1,11 +1,26 @@
 import os
 import re
+from typing import Optional
 
+from attr import dataclass
 from twilio.rest import Client
 from twilio.rest.api.v2010.account.message import MessageInstance
 
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
 from secret_santa.util.logging import LoggingUtils
+
+
+@dataclass(kw_only=True)
+class MessageResponse:
+    """
+    Custom message response class to hold the response of the send message call.
+
+    Attributes:
+        status (str): The status of the send message call.
+
+    """
+
+    status: str
 
 
 class TwilioMessagingService:
@@ -23,7 +38,7 @@ class TwilioMessagingService:
 
     """
 
-    def __init__(self, alphanumeric_id: str = None) -> None:
+    def __init__(self, alphanumeric_id: Optional[str] = None) -> None:
         """
         Initialize the Twilio messaging service.
 
@@ -69,7 +84,7 @@ class TwilioMessagingService:
 
         self.logger.debug("Twilio client initialized")
 
-    def load_twilio_config(self) -> (str, str, str):
+    def load_twilio_config(self) -> tuple[str, str, str]:
         """
         Load the Twilio service configuration / secrets from the environment variables and assert
         everything needed is present.
@@ -90,7 +105,7 @@ class TwilioMessagingService:
             f"or {TWILIO_NUMBER} missing."
         )
 
-        return twilio_number, twilio_account_sid, twilio_auth_token
+        return twilio_number, twilio_account_sid, twilio_auth_token  # type: ignore
 
     def send_message(
         self,
@@ -98,7 +113,7 @@ class TwilioMessagingService:
         to: str,
         *,
         dry_run: bool,
-    ) -> MessageInstance | str:
+    ) -> MessageResponse:
         """
         Send a text message with the string specified in the ``body`` to the number specified in ``to``.
 
@@ -108,18 +123,17 @@ class TwilioMessagingService:
             dry_run: If True, the invocation would be a dry run, i.e. the service won't actually send the message.
 
         Returns:
-            A Twilio message instance as a response of the message sent.
-                If ``dry_run`` is provided, a string summarizing the action will be returned.
-
+            A message response instance as a response of the message sent (or not sent in case of a dry run).
         """
         # Send the "body" message to the number specified in the "to" param
         # If an alphanumeric sender ID has been set, use it as the sender ID,
         # otherwise - Use the number provided in the environment
         if dry_run:
             # No need to actually send a message
-            return "Not executed (DRY RUN)"
-        return self.twilio_client.messages.create(
+            return MessageResponse(status="Not executed (DRY RUN)")
+        response = self.twilio_client.messages.create(
             body=body,
             to=to,
             from_=self.alphanumeric_id if self.alphanumeric_id else self.twilio_number,
         )
+        return MessageResponse(status=str(response.status))
