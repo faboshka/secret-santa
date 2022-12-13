@@ -25,3 +25,5 @@ jobs:
         run: poetry run task isort_check
       - name: Check black
         run: poetry run task black_check
+      - name: Check mypy
+        run: poetry run task mypy
