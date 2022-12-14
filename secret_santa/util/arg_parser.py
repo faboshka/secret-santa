@@ -1,7 +1,6 @@
 import argparse
-from typing import List
 
-from .logging import LoggingUtils
+from secret_santa.util.logging import LoggingUtils
 
 
 class ArgParserUtils:
@@ -10,7 +9,7 @@ class ArgParserUtils:
     class SmartFormatter(argparse.HelpFormatter):
         """A super class of argparse.HelpFormatter solemnly for allowing new lines in the ``argparser``'s help"""
 
-        def _split_lines(self, text: str, width: int) -> List[str]:
+        def _split_lines(self, text: str, width: int) -> list[str]:
             """
             Split lines and preserve line breaks in case ``text`` starts with ``|R`` (indicating raw).
 

@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List
+from typing import Optional
 
 
 class LoggingUtils:
@@ -11,7 +11,7 @@ class LoggingUtils:
 
     """
 
-    logging_levels: Dict[str, int] = {
+    logging_levels: dict[str, int] = {
         "critical": logging.CRITICAL,
         "error": logging.ERROR,
         "warn": logging.WARNING,
@@ -46,8 +46,8 @@ class LoggingUtils:
 
     @staticmethod
     def get_logger(
-        name: str = None,
-        handlers: List[logging.Handler] = None,
+        name: Optional[str] = None,
+        handlers: Optional[list[logging.Handler]] = None,
         add_common_handler: bool = True,
     ) -> logging.Logger:
         """

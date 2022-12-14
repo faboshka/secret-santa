@@ -1,4 +1,4 @@
-from typing import List, TypeVar
+from typing import TypeVar
 
 # A Generic type to be used as a generic type hint
 T = TypeVar("T")  # Can be anything
@@ -8,7 +8,7 @@ class MiscUtils:
     """A class aggregating all the miscellaneous utilities needed (provided as static methods)."""
 
     @staticmethod
-    def is_derangement(list_a: List[T], list_b: List[T]) -> bool:
+    def is_derangement(list_a: list[T], list_b: list[T]) -> bool:
         """
         Check whether ``list_b`` is a derangement permutation of ``list_a``.
 

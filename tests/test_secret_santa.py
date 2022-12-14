@@ -2,7 +2,7 @@ import itertools
 import os
 from argparse import Namespace
 from pathlib import Path
-from typing import Generator, List, Tuple
+from typing import Generator
 
 import pytest
 from _pytest.capture import CaptureFixture
@@ -70,7 +70,7 @@ def participants_in_participants_file(
     participant_john_johnny_doe: Participant,
     participant_jane_doe: Participant,
     participant_richard_rich_roe: Participant,
-) -> List[Participant]:
+) -> list[Participant]:
     return [
         participant_john_johnny_doe,
         participant_jane_doe,
@@ -86,7 +86,7 @@ def default_secret_santa_instance(
     monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyTwilioAccountSIDValue")
     monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyTwilioAuthToken")
     monkeypatch.setenv(TWILIO_NUMBER, "+1234567890")
-    return SecretSanta(participants_json_path=str(test_participants_file_path), dry_run=False)
+    return SecretSanta(participants_json_path=test_participants_file_path, dry_run=False)
 
 
 def test_version():
@@ -94,7 +94,7 @@ def test_version():
 
 
 def test_load_env_with_env_file(monkeypatch: MonkeyPatch, test_env_file_path: Path):
-    load_env(str(test_env_file_path))
+    load_env(test_env_file_path)
     assert (
         os.getenv(TWILIO_ACCOUNT_SID) == "DummyTwilioAccountSIDValue"
     ), f"The environment variable {TWILIO_ACCOUNT_SID} value loaded does not match the expected value."
@@ -111,7 +111,7 @@ def test_load_env_with_env_file(monkeypatch: MonkeyPatch, test_env_file_path: Pa
 
 def test_load_invalid_env_file(invalid_test_env_file: Path):
     with pytest.raises(SystemExit) as exception_info:
-        load_env(str(invalid_test_env_file))
+        load_env(invalid_test_env_file)
     assert (
         "One or more of the environment variables needed "
         "(['TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_NUMBER']) has not been passed."
@@ -154,12 +154,12 @@ def test_env_file_value_override_existing(
     monkeypatch: MonkeyPatch,
     test_env_file_path: Path,
     override_system: bool,
-    system_values: List[Tuple[str, str]],
-    expected: List[Tuple[str, str]],
+    system_values: list[tuple[str, str]],
+    expected: list[tuple[str, str]],
 ):
     for env_key, env_value in system_values:
         monkeypatch.setenv(env_key, env_value)
-    load_env(dotenv_path=str(test_env_file_path), override_system=override_system)
+    load_env(dotenv_path=test_env_file_path, override_system=override_system)
     for expected_env_key, expected_env_value in expected:
         assert (
             os.getenv(expected_env_key) == expected_env_value
@@ -167,7 +167,7 @@ def test_env_file_value_override_existing(
 
 
 def test_load_env_without_env_file_no_env(mocker: MockerFixture):
-    mocker.patch("os.path.exists", return_value=False)
+    mocker.patch.object(Path, "exists", return_value=False)
     with pytest.raises(SystemExit) as exception_info:
         load_env()
     assert (
@@ -251,7 +251,7 @@ def test_init(
     )
 
     secret_santa_obj = SecretSanta(
-        participants_json_path=str(test_participants_file_path),
+        participants_json_path=test_participants_file_path,
         show_arrangement=show_arrangement,
         dry_run=dry_run,
     )
@@ -279,11 +279,12 @@ def test_init_defaults(
     monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyTwilioAccountSIDValue")
     monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyTwilioAuthToken")
     monkeypatch.setenv(TWILIO_NUMBER, "+1234567890")
-    path_join_mock = mocker.patch(
-        "os.path.join",
-        return_value=str(project_root_directory / "participants.json"),
+    path_join_mock = mocker.patch.object(
+        Path,
+        "__truediv__",
+        return_value=project_root_directory / "participants.json",
     )
-    mocker.patch("os.path.exists", return_value=True)
+    mocker.patch.object(Path, "exists", return_value=True)
     load_participants_mock = mocker.patch(
         "secret_santa.secret_santa_module.SecretSanta.load_participants",
         return_value=mocker.MagicMock(),
@@ -293,7 +294,7 @@ def test_init_defaults(
 
     path_join_mock.assert_called()
     load_participants_mock.assert_called_once_with(
-        participants_json_path=str(project_root_directory / "participants.json")
+        participants_json_path=project_root_directory / "participants.json"
     )
     assert (
         secret_santa_obj.show_arrangement is False
@@ -303,10 +304,10 @@ def test_init_defaults(
 def test_load_participants(
     default_secret_santa_instance: SecretSanta,
     test_participants_file_path: Path,
-    participants_in_participants_file: List[Participant],
+    participants_in_participants_file: list[Participant],
 ):
     loaded_participants = default_secret_santa_instance.load_participants(
-        str(test_participants_file_path)
+        test_participants_file_path
     )
 
     assert (
@@ -332,14 +333,14 @@ def test_get_participant_message_name(
 
     assert (
         message_name == expected_message_name
-    ), "The message name returned does not match the expected messgae name."
+    ), "The message name returned does not match the expected message name."
 
 
 @pytest.mark.parametrize("execution_number", range(9))
 def test_participants_derangement(
     execution_number: int,
     default_secret_santa_instance: SecretSanta,
-    participants_in_participants_file: List[Participant],
+    participants_in_participants_file: list[Participant],
 ):
     participants_derangement = default_secret_santa_instance.get_participants_derangement()
     assert MiscUtils.is_derangement(
@@ -388,7 +389,7 @@ def test_run(
     create_message_mock = mocker.patch("twilio.rest.api.v2010.account.message.MessageList.create")
 
     secret_santa_obj = SecretSanta(
-        participants_json_path=str(test_participants_file_path),
+        participants_json_path=test_participants_file_path,
         dry_run=dry_run,
     )
     send_message_spy = mocker.spy(secret_santa_obj.messaging_client, "send_message")

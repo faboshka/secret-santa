@@ -1,19 +1,19 @@
 import itertools
-from typing import Callable, List, Tuple
+from typing import Callable, Optional
 
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 from pytest_mock import MockerFixture
 
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
-from secret_santa.twilio_messaging_service import TwilioMessagingService
+from secret_santa.twilio_messaging_service import MessageResponse, TwilioMessagingService
 
 
 @pytest.fixture()
 def twilio_messaging_service_builder(
     monkeypatch: MonkeyPatch,
-) -> Callable[[str | None], TwilioMessagingService]:
-    def _builder(alphanumeric_id: str | None = None):
+) -> Callable[[Optional[str]], TwilioMessagingService]:
+    def _builder(alphanumeric_id: Optional[str] = None) -> TwilioMessagingService:
         monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyValue1")
         monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyValue2")
         monkeypatch.setenv(TWILIO_NUMBER, "DummyValue3")
@@ -24,16 +24,16 @@ def twilio_messaging_service_builder(
 
 @pytest.fixture()
 def twilio_messaging_service_alphanumeric_id_secret_santa(
-    twilio_messaging_service_builder: Callable[[str | None], TwilioMessagingService],
+    twilio_messaging_service_builder: Callable[[Optional[str]], TwilioMessagingService],
 ) -> TwilioMessagingService:
     return twilio_messaging_service_builder("SecretSanta")
 
 
 @pytest.fixture()
 def twilio_messaging_service(
-    twilio_messaging_service_builder: Callable[[str | None], TwilioMessagingService],
+    twilio_messaging_service_builder: Callable[[Optional[str]], TwilioMessagingService],
 ) -> TwilioMessagingService:
-    return twilio_messaging_service_builder()
+    return twilio_messaging_service_builder(None)
 
 
 @pytest.mark.parametrize(
@@ -58,7 +58,7 @@ def twilio_messaging_service(
 )
 def test_invalid_config(
     monkeypatch: MonkeyPatch,
-    invalid_env_variable_key_value_tuple_list: List[Tuple[str, str]],
+    invalid_env_variable_key_value_tuple_list: list[tuple[str, str]],
 ):
     for env_key, env_value in invalid_env_variable_key_value_tuple_list:
         (
@@ -136,8 +136,8 @@ def test_send_message(
     )
 
     if dry_run:
-        assert (
-            response == "Not executed (DRY RUN)"
+        assert response == MessageResponse(
+            status="Not executed (DRY RUN)"
         ), "The response returned does not match the response expected."
     else:
         create_message_mock.assert_called_once_with(

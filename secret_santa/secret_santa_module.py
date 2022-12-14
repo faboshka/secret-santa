@@ -4,7 +4,9 @@ import logging
 import os
 import random
 import time
-from typing import List
+from os import PathLike
+from pathlib import Path
+from typing import Optional
 
 import pyfiglet
 from dotenv import load_dotenv
@@ -29,7 +31,7 @@ class SecretSanta:
 
     Attributes:
         logger (logging.Logger): The class logger.
-        participants (List[Participant]): A list of the Secret Santa participants.
+        participants (list[Participant]): A list of the Secret Santa participants.
         messaging_client (TwilioMessagingService): An instance of the messaging client.
         show_arrangement (bool): If ``True``, the relevant method will print the arrangement once it's calculated.
         dry_run (bool): If ``True``, the class methods will run a dry run (not execute some things,
@@ -39,7 +41,7 @@ class SecretSanta:
 
     def __init__(
         self,
-        participants_json_path: str = None,
+        participants_json_path: Optional[PathLike] = None,
         show_arrangement: bool = False,
         *,
         dry_run: bool,
@@ -62,11 +64,11 @@ class SecretSanta:
         # Load the participants
         if not participants_json_path:
             self.logger.warning("No path to the participants JSON has been passed")
-            participants_json_path = os.path.join(PathUtils.get_project_root(), "participants.json")
+            participants_json_path = PathUtils.get_project_root() / "participants.json"
             self.logger.debug("Attempting to look for a participants file at root level")
-        assert os.path.exists(
+        assert Path(
             participants_json_path
-        ), f"Could not find the participants JSON file @ {participants_json_path}"
+        ).exists(), f"Could not find the participants JSON file @ {participants_json_path}"
 
         self.logger.debug("Loading the participants")
         self.participants = self.load_participants(participants_json_path=participants_json_path)
@@ -81,7 +83,7 @@ class SecretSanta:
 
         self.logger.info("SecretSanta class initialized")
 
-    def load_participants(self, participants_json_path: str) -> List[Participant]:
+    def load_participants(self, participants_json_path: PathLike) -> list[Participant]:
         """
         Read the JSON file at ``participants_json_path`` and load it into a list of participants.
 
@@ -93,7 +95,7 @@ class SecretSanta:
 
         """
         # Read the JSON file
-        participants_json = FileUtils.read_file(participants_json_path)
+        participants_json: str = FileUtils.read_file(Path(participants_json_path))
         # Convert the JSON string to a list of dicts
         participants_dict_list = json.loads(participants_json)
         assert len(participants_dict_list) > 2, (
@@ -108,7 +110,7 @@ class SecretSanta:
             self.logger.debug(f"Loaded: {participant}")
         return participants
 
-    def get_participants_derangement(self) -> List[Participant]:
+    def get_participants_derangement(self) -> list[Participant]:
         """
         Create and return a new list of the participants loaded to the class after a random derangement permutation,
         most likely to be used as the recipients.
@@ -192,14 +194,11 @@ class SecretSanta:
                 participant.phone_number,
                 dry_run=self.dry_run,
             )
-            logger.info(
-                f"Message sent to: {participant}, "
-                f"Status: {response.status if not self.dry_run else str(response)}"
-            )
+            logger.info(f"Message sent to: {participant}, " f"Status: {response.status}")
         return 0
 
 
-def load_env(dotenv_path: str = None, override_system: bool = False) -> None:
+def load_env(dotenv_path: Optional[PathLike] = None, override_system: bool = False) -> None:
     """
     Check whether the environment has been configured correctly and the secrets needed has been passed.
 
@@ -214,17 +213,17 @@ def load_env(dotenv_path: str = None, override_system: bool = False) -> None:
     # Read the .env file if exists and load it to the environment
     if not dotenv_path:
         logger.warning("No path to the .env file has been passed")
-        root_dot_env = os.path.join(PathUtils.get_project_root(), ".env")
+        root_dot_env = PathUtils.get_project_root() / ".env"
         logger.debug("Attempting to look for a .env file at root level")
 
-        if os.path.exists(dotenv_path):
+        if root_dot_env.exists():
             logger.info(f"Reading .env file at: {dotenv_path}")
             dotenv_path = root_dot_env
         else:
             logger.warning(f"No .env file could be found at: {dotenv_path}")
             # load_dotenv won't fail in case the file does not exist and setting it to an empty
             # string would prevent it from looking for a `.env` file.
-            dotenv_path = ""
+            dotenv_path = Path("")
 
     load_dotenv(dotenv_path=dotenv_path, override=override_system)
 
@@ -246,14 +245,14 @@ def main() -> int:
         Zero in case the ``SecretSanta`` class is initialized and run as should be, non-Zero code otherwise.
 
     """
-    secret_santa_figlet: FigletString = pyfiglet.figlet_format("Secret  Santa")
+    secret_santa_figlet = pyfiglet.figlet_format("Secret  Santa")
     print(secret_santa_figlet)
     time.sleep(0.5)
     # Parse the provided arguments
     parser = ArgParserUtils.get_secret_santa_argument_parser()
     args = parser.parse_args()
     # Get the root logger and update its level to set the main logging level
-    logging.getLogger().setLevel(LoggingUtils.logging_levels.get(args.logging_level))
+    logging.getLogger().setLevel(LoggingUtils.logging_levels.get(args.logging_level, "info"))
     # Load the environment
     load_env(args.env_path)
     # Initialize the Secret Santa module and run it to send a message to the participants
