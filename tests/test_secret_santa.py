@@ -2,11 +2,12 @@ import itertools
 import os
 from argparse import Namespace
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Iterator
 
 import pytest
 from _pytest.capture import CaptureFixture
 from _pytest.monkeypatch import MonkeyPatch
+from pytest_lazyfixture import lazy_fixture
 from pytest_mock import MockerFixture
 
 import secret_santa.secret_santa_module
@@ -14,11 +15,11 @@ from secret_santa import __version__
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
 from secret_santa.model.participant import Participant
 from secret_santa.secret_santa_module import SecretSanta, load_env
-from secret_santa.util.misc import MiscUtils
+from secret_santa.util import misc
 
 
 @pytest.fixture(autouse=True)
-def clear_environment(mocker: MockerFixture):
+def clear_environment(mocker: MockerFixture) -> Iterator:
     # This is essentially a pretest to clear the environment, as all tests run in the same session
     # with environment variables loaded from another tests.
     mocker.patch.dict(os.environ, {}, clear=True)
@@ -89,11 +90,11 @@ def default_secret_santa_instance(
     return SecretSanta(participants_json_path=test_participants_file_path, dry_run=False)
 
 
-def test_version():
+def test_version() -> None:
     assert __version__ == "0.1.0"
 
 
-def test_load_env_with_env_file(monkeypatch: MonkeyPatch, test_env_file_path: Path):
+def test_load_env_with_env_file(monkeypatch: MonkeyPatch, test_env_file_path: Path) -> None:
     load_env(test_env_file_path)
     assert (
         os.getenv(TWILIO_ACCOUNT_SID) == "DummyTwilioAccountSIDValue"
@@ -109,7 +110,7 @@ def test_load_env_with_env_file(monkeypatch: MonkeyPatch, test_env_file_path: Pa
     monkeypatch.delenv(TWILIO_NUMBER, raising=False)
 
 
-def test_load_invalid_env_file(invalid_test_env_file: Path):
+def test_load_invalid_env_file(invalid_test_env_file: Path) -> None:
     with pytest.raises(SystemExit) as exception_info:
         load_env(invalid_test_env_file)
     assert (
@@ -156,7 +157,7 @@ def test_env_file_value_override_existing(
     override_system: bool,
     system_values: list[tuple[str, str]],
     expected: list[tuple[str, str]],
-):
+) -> None:
     for env_key, env_value in system_values:
         monkeypatch.setenv(env_key, env_value)
     load_env(dotenv_path=test_env_file_path, override_system=override_system)
@@ -166,7 +167,7 @@ def test_env_file_value_override_existing(
         ), f"The environment variable {expected_env_key} value loaded does not match the expected value."
 
 
-def test_load_env_without_env_file_no_env(mocker: MockerFixture):
+def test_load_env_without_env_file_no_env(mocker: MockerFixture) -> None:
     mocker.patch.object(Path, "exists", return_value=False)
     with pytest.raises(SystemExit) as exception_info:
         load_env()
@@ -180,7 +181,7 @@ def test_load_env_without_env_file_no_env(mocker: MockerFixture):
 def test_load_env_without_env_file_with_predefined_env(
     mocker: MockerFixture,
     monkeypatch: MonkeyPatch,
-):
+) -> None:
     monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyTwilioAccountSIDValue")
     monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyTwilioAuthToken")
     monkeypatch.setenv(TWILIO_NUMBER, "+1234567890")
@@ -202,7 +203,7 @@ def test_module_main(
     test_participants_file_path: Path,
     dry_run: bool,
     show_arrangement: bool,
-):
+) -> None:
     monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyTwilioAccountSIDValue")
     monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyTwilioAuthToken")
     monkeypatch.setenv(TWILIO_NUMBER, "+1234567890")
@@ -241,7 +242,7 @@ def test_init(
     test_participants_file_path: Path,
     dry_run: bool,
     show_arrangement: bool,
-):
+) -> None:
     monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyTwilioAccountSIDValue")
     monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyTwilioAuthToken")
     monkeypatch.setenv(TWILIO_NUMBER, "+1234567890")
@@ -275,7 +276,7 @@ def test_init_defaults(
     mocker: MockerFixture,
     monkeypatch: MonkeyPatch,
     project_root_directory: Path,
-):
+) -> None:
     monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyTwilioAccountSIDValue")
     monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyTwilioAuthToken")
     monkeypatch.setenv(TWILIO_NUMBER, "+1234567890")
@@ -305,7 +306,7 @@ def test_load_participants(
     default_secret_santa_instance: SecretSanta,
     test_participants_file_path: Path,
     participants_in_participants_file: list[Participant],
-):
+) -> None:
     loaded_participants = default_secret_santa_instance.load_participants(
         test_participants_file_path
     )
@@ -318,17 +319,17 @@ def test_load_participants(
 @pytest.mark.parametrize(
     ("participant", "expected_message_name"),
     [
-        (pytest.lazy_fixture("participant_john_jd_doe"), "J.D."),
-        (pytest.lazy_fixture("participant_jane_doe"), "Jane"),
-        (pytest.lazy_fixture("participant_richard_rich_roe"), "Rich"),
-        (pytest.lazy_fixture("participant_howard"), "Howard"),
+        (lazy_fixture("participant_john_jd_doe"), "J.D."),
+        (lazy_fixture("participant_jane_doe"), "Jane"),
+        (lazy_fixture("participant_richard_rich_roe"), "Rich"),
+        (lazy_fixture("participant_howard"), "Howard"),
     ],
 )
 def test_get_participant_message_name(
     default_secret_santa_instance: SecretSanta,
     participant: Participant,
     expected_message_name: str,
-):
+) -> None:
     message_name = default_secret_santa_instance.get_participant_message_name(participant)
 
     assert (
@@ -341,9 +342,9 @@ def test_participants_derangement(
     execution_number: int,
     default_secret_santa_instance: SecretSanta,
     participants_in_participants_file: list[Participant],
-):
+) -> None:
     participants_derangement = default_secret_santa_instance.get_participants_derangement()
-    assert MiscUtils.is_derangement(
+    assert misc.is_derangement(
         default_secret_santa_instance.participants,
         participants_derangement,
     ), "The output of `get_participants_derangement` is not a derangement as expected."
@@ -353,13 +354,13 @@ def test_participants_derangement(
     ("participant", "recipient", "expected_message"),
     [
         (
-            pytest.lazy_fixture("participant_john_jd_doe"),
-            pytest.lazy_fixture("participant_jane_doe"),
+            lazy_fixture("participant_john_jd_doe"),
+            lazy_fixture("participant_jane_doe"),
             "Hello J.D.,\nYou'll be Jane's Secret Santa!",
         ),
         (
-            pytest.lazy_fixture("participant_howard"),
-            pytest.lazy_fixture("participant_richard_rich_roe"),
+            lazy_fixture("participant_howard"),
+            lazy_fixture("participant_richard_rich_roe"),
             "Hello Howard,\nYou'll be Rich's Secret Santa!",
         ),
     ],
@@ -369,7 +370,7 @@ def test_secret_santa_message(
     participant: Participant,
     recipient: Participant,
     expected_message: str,
-):
+) -> None:
     message = default_secret_santa_instance.get_secret_santa_message(participant, recipient)
     assert (
         message == expected_message
@@ -382,7 +383,7 @@ def test_run(
     monkeypatch: MonkeyPatch,
     test_participants_file_path: Path,
     dry_run: bool,
-):
+) -> None:
     monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyTwilioAccountSIDValue")
     monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyTwilioAuthToken")
     monkeypatch.setenv(TWILIO_NUMBER, "+1234567890")

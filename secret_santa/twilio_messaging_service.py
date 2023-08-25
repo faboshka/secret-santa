@@ -4,10 +4,9 @@ from typing import Optional
 
 from attr import dataclass
 from twilio.rest import Client
-from twilio.rest.api.v2010.account.message import MessageInstance
 
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
-from secret_santa.util.logging import LoggingUtils
+from secret_santa.util import logging
 
 
 @dataclass(kw_only=True)
@@ -51,7 +50,7 @@ class TwilioMessagingService:
 
         """
         # Set up the class logger
-        self.logger = LoggingUtils.get_logger(self.__class__.__name__)
+        self.logger = logging.get_logger(self.__class__.__name__)
 
         self.logger.debug("Initializing messaging client")
 

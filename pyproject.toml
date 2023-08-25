@@ -64,7 +64,7 @@ tests_only = "tests/"
 test = { cmd = "pytest -v {tests_only}", use_vars = true, help = "run all tests." }
 isort = { cmd = "isort {all_paths}", use_vars = true, help = "run isort on sources and tests." }
 black = { cmd = "black {all_paths}", use_vars = true, help = "run black on sources and tests." }
-mypy = { cmd = "mypy {sources_only}", use_vars = true, help = "run mypy on sources." }
+mypy = { cmd = "mypy {all_paths}", use_vars = true, help = "run mypy on sources." }
 format = { cmd = "task isort && task black", help = "reformat code" }
 
 isort_check = { cmd = "task isort --check-only", help = "run task isort in check mode (no writing back)." }
