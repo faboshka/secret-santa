@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from _pytest.fixtures import FixtureRequest
 
 
 @pytest.fixture(autouse=True)
@@ -14,5 +15,5 @@ def project_root_directory() -> Path:
 
 
 @pytest.fixture(autouse=True)
-def test_root_directory(request) -> Path:
-    return Path(request.config.rootdir)
+def test_root_directory(request: FixtureRequest) -> Path:
+    return Path(request.config.rootdir)  # type: ignore[attr-defined]

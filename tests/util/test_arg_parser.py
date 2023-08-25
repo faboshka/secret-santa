@@ -3,13 +3,14 @@ from copy import deepcopy
 from typing import Sequence
 
 import pytest
+from pytest_lazyfixture import lazy_fixture
 
-from secret_santa.util.arg_parser import ArgParserUtils
+from secret_santa.util import arg_parser
 
 
 @pytest.fixture()
 def secret_santa_arg_parser() -> ArgumentParser:
-    return ArgParserUtils.get_secret_santa_argument_parser()
+    return arg_parser.get_secret_santa_argument_parser()
 
 
 @pytest.fixture()
@@ -47,7 +48,7 @@ def default_namespace() -> Namespace:
                 env_path="dummy_env_path",
             ),
         ),
-        ("", pytest.lazy_fixture("default_namespace")),  # No arguments provided
+        ("", lazy_fixture("default_namespace")),  # No arguments provided
     ],
 )
 def test_arg_parser(
@@ -55,7 +56,7 @@ def test_arg_parser(
     default_namespace: Namespace,
     input_: Sequence[str],
     namespace_diff: Namespace,
-):
+) -> None:
     def update_namespace_with_diff(namespace_: Namespace, namespace_diff_: Namespace) -> Namespace:
         updated_namespace = deepcopy(namespace_)
         for key, value in vars(namespace_diff_).items():

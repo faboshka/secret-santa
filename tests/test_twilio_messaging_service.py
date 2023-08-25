@@ -3,6 +3,7 @@ from typing import Callable, Optional
 
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
+from pytest_lazyfixture import lazy_fixture
 from pytest_mock import MockerFixture
 
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
@@ -59,7 +60,7 @@ def twilio_messaging_service(
 def test_invalid_config(
     monkeypatch: MonkeyPatch,
     invalid_env_variable_key_value_tuple_list: list[tuple[str, str]],
-):
+) -> None:
     for env_key, env_value in invalid_env_variable_key_value_tuple_list:
         (
             monkeypatch.setenv(env_key, env_value)
@@ -74,7 +75,7 @@ def test_invalid_config(
     ), "The assertion raised does not match the assertion expected."
 
 
-def test_load_twilio_config(mocker: MockerFixture, monkeypatch: MonkeyPatch):
+def test_load_twilio_config(mocker: MockerFixture, monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyValue1")
     monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyValue2")
     monkeypatch.setenv(TWILIO_NUMBER, "DummyValue3")
@@ -92,7 +93,7 @@ def test_load_twilio_config(mocker: MockerFixture, monkeypatch: MonkeyPatch):
 def test_twilio_messaging_service_alphanumeric_id(
     twilio_messaging_service_builder: Callable[[str | None], TwilioMessagingService],
     alphanumeric_id: str,
-):
+) -> None:
     twilio_messaging_service = twilio_messaging_service_builder(alphanumeric_id)
     assert twilio_messaging_service.alphanumeric_id == alphanumeric_id, (
         f"The alphanumeric ID loaded to the TwilioMessagingService instance "
@@ -104,7 +105,7 @@ def test_twilio_messaging_service_alphanumeric_id(
 def test_invalid_twilio_messaging_service_alphanumeric_id(
     twilio_messaging_service_builder: Callable[[str | None], TwilioMessagingService],
     alphanumeric_id: str,
-):
+) -> None:
     with pytest.raises(AssertionError) as exception_info:
         twilio_messaging_service_builder(alphanumeric_id)
     assert (
@@ -117,8 +118,8 @@ def test_invalid_twilio_messaging_service_alphanumeric_id(
     ("twilio_messaging_service_", "dry_run"),
     itertools.product(
         [
-            pytest.lazy_fixture("twilio_messaging_service"),
-            pytest.lazy_fixture("twilio_messaging_service_alphanumeric_id_secret_santa"),
+            lazy_fixture("twilio_messaging_service"),
+            lazy_fixture("twilio_messaging_service_alphanumeric_id_secret_santa"),
         ],
         [False, True],
     ),
@@ -127,7 +128,7 @@ def test_send_message(
     mocker: MockerFixture,
     twilio_messaging_service_: TwilioMessagingService,
     dry_run: bool,
-):
+) -> None:
     create_message_mock = mocker.patch("twilio.rest.api.v2010.account.message.MessageList.create")
     response = twilio_messaging_service_.send_message(
         body="Hello there :) This is the service send message test...",

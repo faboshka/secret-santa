@@ -10,19 +10,16 @@ from typing import Optional
 
 import pyfiglet
 from dotenv import load_dotenv
-from pyfiglet import FigletString
 
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
 from secret_santa.model.participant import Participant
 from secret_santa.twilio_messaging_service import TwilioMessagingService
-from secret_santa.util.arg_parser import ArgParserUtils
-from secret_santa.util.file import FileUtils
-from secret_santa.util.logging import LoggingUtils
-from secret_santa.util.misc import MiscUtils
-from secret_santa.util.path import PathUtils
+from secret_santa.util import arg_parser, file
+from secret_santa.util import logging as logging_util
+from secret_santa.util import misc, path
 
 # Set up the main logger
-logger = LoggingUtils.get_logger("main")
+logger = logging_util.get_logger("main")
 
 
 class SecretSanta:
@@ -57,14 +54,14 @@ class SecretSanta:
 
         """
         # Set up the class logger
-        self.logger = LoggingUtils.get_logger(self.__class__.__name__)
+        self.logger = logging_util.get_logger(self.__class__.__name__)
 
         self.logger.debug("Initializing the Secret Santa class")
 
         # Load the participants
         if not participants_json_path:
             self.logger.warning("No path to the participants JSON has been passed")
-            participants_json_path = PathUtils.get_project_root() / "participants.json"
+            participants_json_path = path.get_project_root() / "participants.json"
             self.logger.debug("Attempting to look for a participants file at root level")
         assert Path(
             participants_json_path
@@ -95,7 +92,7 @@ class SecretSanta:
 
         """
         # Read the JSON file
-        participants_json: str = FileUtils.read_file(Path(participants_json_path))
+        participants_json: str = file.read_file(Path(participants_json_path))
         # Convert the JSON string to a list of dicts
         participants_dict_list = json.loads(participants_json)
         assert len(participants_dict_list) > 2, (
@@ -123,7 +120,7 @@ class SecretSanta:
         recipients = copy.deepcopy(self.participants)
         # Keep shuffling the copy until a derangement permutation of the participants is achieved
         # i.e. No two participants parallel to each other in the participants and the new list are the same
-        while not MiscUtils.is_derangement(self.participants, recipients):
+        while not misc.is_derangement(self.participants, recipients):
             random.shuffle(recipients)
         return recipients
 
@@ -213,7 +210,7 @@ def load_env(dotenv_path: Optional[PathLike] = None, override_system: bool = Fal
     # Read the .env file if exists and load it to the environment
     if not dotenv_path:
         logger.warning("No path to the .env file has been passed")
-        root_dot_env = PathUtils.get_project_root() / ".env"
+        root_dot_env = path.get_project_root() / ".env"
         logger.debug("Attempting to look for a .env file at root level")
 
         if root_dot_env.exists():
@@ -249,10 +246,10 @@ def main() -> int:
     print(secret_santa_figlet)
     time.sleep(0.5)
     # Parse the provided arguments
-    parser = ArgParserUtils.get_secret_santa_argument_parser()
+    parser = arg_parser.get_secret_santa_argument_parser()
     args = parser.parse_args()
     # Get the root logger and update its level to set the main logging level
-    logging.getLogger().setLevel(LoggingUtils.logging_levels.get(args.logging_level, "info"))
+    logging.getLogger().setLevel(logging_util.logging_levels.get(args.logging_level, "info"))
     # Load the environment
     load_env(args.env_path)
     # Initialize the Secret Santa module and run it to send a message to the participants
