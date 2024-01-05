@@ -20,7 +20,7 @@ jobs:
       - name: Install poetry
         run: python -m pip install poetry
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --only main,dev
       - name: Check format
         run: poetry run task format_check
       - name: Lint code
