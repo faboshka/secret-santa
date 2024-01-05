@@ -16,7 +16,7 @@ pyfiglet = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
-taskipy = "^1.12.0"
+taskipy = "^1.12.2"
 pytest-lazy-fixture = "^0.6.3"
 pytest-mock = "^3.11.1"
 mypy = "^1.5.1"
@@ -69,12 +69,34 @@ sources_only = "secret_santa/"
 tests_only = "tests/"
 
 [tool.taskipy.tasks]
-format_check = { cmd = "task format --check", use_vars = true, help = "run ruff format on sources and tests in check mode (no writing back)." }
-ruff_lint = { cmd = "ruff check {all_paths}", use_vars = true, help = "run ruff linter on sources and tests." }
-ruff_lint_fix = { cmd = "task ruff_lint --fix", use_vars = true, help = "[changes code] run ruff linter and fix fixable issues on sources and tests." }
-mypy = { cmd = "mypy {all_paths}", use_vars = true, help = "run mypy on sources." }
+pre_format_check = { cmd = "echo 'Running the \"format_check\" task...'" }
+format_check = { cmd = "ruff format {all_paths} --check", use_vars = true, help = "run ruff format on sources and tests in check mode." }
+post_format_check = { cmd = "echo 'Done running the \"format_check\" task!'" }
 
-format = { cmd = "ruff format {all_paths}", use_vars = true, help = "[changes code] run ruff format on sources and tests." }
-lint = { cmd = "task format_check && task ruff_lint && task mypy", help = "check code formatting and rules violations." }
-fix = { cmd = "task format && task ruff_lint_fix", help = "[changes code] reformat code and fix fixable linting issues." }
+pre_ruff_lint = { cmd = "echo 'Running the \"ruff_lint\" task...'" }
+ruff_lint = { cmd = "ruff check {all_paths}", use_vars = true, help = "run ruff linter on sources and tests." }
+post_ruff_lint = { cmd = "echo 'Done running the \"ruff_lint\" task!'" }
+
+pre_ruff_lint_fix = { cmd = "echo 'Running the \"ruff_lint_fix\" task...'" }
+ruff_lint_fix = { cmd = "ruff check {all_paths} --fix", use_vars = true, help = "[changes code] run ruff linter and fix fixable issues on sources and tests." }
+post_ruff_lint_fix = { cmd = "echo 'Done running the \"ruff_lint_fix\" task!'" }
+
+pre_mypy = { cmd = "echo 'Running the \"mypy\" task...'" }
+mypy = { cmd = "mypy {all_paths}", use_vars = true, help = "run mypy on sources and tests." }
+post_mypy = { cmd = "echo 'Done running the \"mypy\" task!'" }
+
+pre_test = { cmd = "echo 'Running the \"test\" task...'" }
 test = { cmd = "pytest -v {tests_only}", use_vars = true, help = "run all tests." }
+post_test = { cmd = "echo 'Done running the \"test\" task!'" }
+
+pre_format = { cmd = "echo 'Running the \"format\" task...'" }
+format = { cmd = "ruff format {all_paths}", use_vars = true, help = "[changes code] run ruff format on sources and tests." }
+post_format = { cmd = "echo 'Done running the \"format\" task!'" }
+
+pre_lint = { cmd = "echo 'Linting the whole codebase...'" }
+lint = { cmd = "task format_check && task ruff_lint && task mypy", help = "check code formatting and rules violations." }
+post_lint = { cmd = "echo 'Done linting the whole codebase!'" }
+
+pre_fix = { cmd = "echo 'Formating code and fixing fixable issues accross the whole codebase...'" }
+fix = { cmd = "task format && task ruff_lint_fix", help = "[changes code] reformat code and fix fixable linting issues." }
+post_fix = { cmd = "echo 'Done formating code and fixing fixable issues accross the whole codebase!'" }

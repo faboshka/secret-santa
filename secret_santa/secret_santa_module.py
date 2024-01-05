@@ -11,9 +11,9 @@ from typing import Optional
 import pyfiglet
 from dotenv import load_dotenv
 
-from secret_santa.twilio_messaging_service import TwilioMessagingService
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
 from secret_santa.model.participant import Participant
+from secret_santa.twilio_messaging_service import TwilioMessagingService
 from secret_santa.util import arg_parser, file, misc, path
 from secret_santa.util import logging as logging_util
 
