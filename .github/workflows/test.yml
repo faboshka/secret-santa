@@ -28,9 +28,10 @@ jobs:
       - name: Run tests
         run: poetry run pytest tests --junitxml=junit.xml -n auto
       - name: Test reporter
-        uses: dorny/test-reporter@v1
+        uses: phoenix-actions/test-reporting@v12
         if: success() || failure()
         with:
           name: Secret Santa tests on ${{ matrix.os }} (Python ${{ matrix.python-version }}) Report
           path: junit.xml
           reporter: java-junit
+          output-to: step-summary
