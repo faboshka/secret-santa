@@ -229,7 +229,7 @@ def test_module_main(
     else:
         assert (
             create_message_mock.call_count == 3
-        ), f"The `create` method of the Twilio API was not called the number of times expected 3."
+        ), "The `create` method of the Twilio API was not called the number of times expected 3."
 
 
 @pytest.mark.parametrize(
@@ -257,19 +257,14 @@ def test_init(
         dry_run=dry_run,
     )
 
-    assert (
-        secret_santa_obj.logger.name == "SecretSanta"
-    ), "The logger was not initialized with the proper name."
+    assert secret_santa_obj.logger.name == "SecretSanta", "The logger was not initialized with the proper name."
     assert (
         secret_santa_obj.dry_run == dry_run
     ), 'The value initialized in the object for "dry_run" does not match the expected value.'
     assert secret_santa_obj.show_arrangement == show_arrangement, (
-        'The value initialized in the object for "show_arrangement" does not match the '
-        "expected value."
+        'The value initialized in the object for "show_arrangement" does not match the ' "expected value."
     )
-    assert (
-        secret_santa_obj.messaging_client is not None
-    ), "The messaging service was not initialized as expected."
+    assert secret_santa_obj.messaging_client is not None, "The messaging service was not initialized as expected."
 
 
 def test_init_defaults(
@@ -294,9 +289,7 @@ def test_init_defaults(
     secret_santa_obj = SecretSanta(dry_run=True)
 
     path_join_mock.assert_called()
-    load_participants_mock.assert_called_once_with(
-        participants_json_path=project_root_directory / "participants.json"
-    )
+    load_participants_mock.assert_called_once_with(participants_json_path=project_root_directory / "participants.json")
     assert (
         secret_santa_obj.show_arrangement is False
     ), "The default value for show_arrangement does not match the expected value."
@@ -307,9 +300,7 @@ def test_load_participants(
     test_participants_file_path: Path,
     participants_in_participants_file: list[Participant],
 ) -> None:
-    loaded_participants = default_secret_santa_instance.load_participants(
-        test_participants_file_path
-    )
+    loaded_participants = default_secret_santa_instance.load_participants(test_participants_file_path)
 
     assert (
         loaded_participants == participants_in_participants_file
@@ -332,9 +323,7 @@ def test_get_participant_message_name(
 ) -> None:
     message_name = default_secret_santa_instance.get_participant_message_name(participant)
 
-    assert (
-        message_name == expected_message_name
-    ), "The message name returned does not match the expected message name."
+    assert message_name == expected_message_name, "The message name returned does not match the expected message name."
 
 
 @pytest.mark.parametrize("execution_number", range(9))
@@ -372,9 +361,7 @@ def test_secret_santa_message(
     expected_message: str,
 ) -> None:
     message = default_secret_santa_instance.get_secret_santa_message(participant, recipient)
-    assert (
-        message == expected_message
-    ), 'The "Secret Santa" message generated does not match the expected message.'
+    assert message == expected_message, 'The "Secret Santa" message generated does not match the expected message.'
 
 
 @pytest.mark.parametrize("dry_run", [False, True])

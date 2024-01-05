@@ -5,37 +5,44 @@ description = "A Secret Santa game which randomly assigns and notifies people to
 license = "Unlicense"
 authors = ["Fawzi Abo Shkara <fawzi.aboshkara@gmail.com>"]
 readme = "README.md"
-homepage = "https://github.com/FawziAS/secret-santa"
-repository = "https://github.com/FawziAS/secret-santa.git"
+homepage = "https://github.com/faboshka/secret-santa"
+repository = "https://github.com/faboshka/secret-santa.git"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+python = "^3.12"
 python-dotenv = "^1.0.0"
-twilio = "^8.7.0"
-pyfiglet = "^0.8.post1"
+twilio = "^8.11.0"
+pyfiglet = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
-black = "^23.7.0"
-isort = "^5.12.0"
 taskipy = "^1.12.0"
 pytest-lazy-fixture = "^0.6.3"
 pytest-mock = "^3.11.1"
 mypy = "^1.5.1"
 types-pytest-lazy-fixture = "^0.6.3.4"
+ruff = "^0.1.11"
 
 [build-system]
 requires = ["poetry-core>=1.5.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black] # The black formatter config
-line-length = 100
+[tool.ruff]
+line-length = 120
 
-[tool.isort] # isort config
-profile = "black"
-line_length = 100
-src_paths = ["secret_santa", "tests"]
-skip_gitignore = true
+[tool.ruff.lint]
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.mypy]
 pretty = true
@@ -62,12 +69,12 @@ sources_only = "secret_santa/"
 tests_only = "tests/"
 
 [tool.taskipy.tasks]
-test = { cmd = "pytest -v {tests_only}", use_vars = true, help = "run all tests." }
-isort = { cmd = "isort {all_paths}", use_vars = true, help = "run isort on sources and tests." }
-black = { cmd = "black {all_paths}", use_vars = true, help = "run black on sources and tests." }
+format_check = { cmd = "task format --check", use_vars = true, help = "run ruff format on sources and tests in check mode (no writing back)." }
+ruff_lint = { cmd = "ruff check {all_paths}", use_vars = true, help = "run ruff linter on sources and tests." }
+ruff_lint_fix = { cmd = "task ruff_lint --fix", use_vars = true, help = "[changes code] run ruff linter and fix fixable issues on sources and tests." }
 mypy = { cmd = "mypy {all_paths}", use_vars = true, help = "run mypy on sources." }
-format = { cmd = "task isort && task black", help = "reformat code" }
 
-isort_check = { cmd = "task isort --check-only", help = "run task isort in check mode (no writing back)." }
-black_check = { cmd = "task black --check", help = "run task black in check mode (no writing back)." }
-lint = { cmd = "task isort_check && task black_check && task mypy", help = "check code formatting." }
+format = { cmd = "ruff format {all_paths}", use_vars = true, help = "[changes code] run ruff format on sources and tests." }
+lint = { cmd = "task format_check && task ruff_lint && task mypy", help = "check code formatting and rules violations." }
+fix = { cmd = "task format && task ruff_lint_fix", help = "[changes code] reformat code and fix fixable linting issues." }
+test = { cmd = "pytest -v {tests_only}", use_vars = true, help = "run all tests." }

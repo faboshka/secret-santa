@@ -65,6 +65,4 @@ def test_arg_parser(
 
     resulting_namespace = update_namespace_with_diff(default_namespace, namespace_diff)
     namespace: Namespace = secret_santa_arg_parser.parse_args(input_)
-    assert (
-        namespace == resulting_namespace
-    ), "The namespace constructed does not match the expected namespace."
+    assert namespace == resulting_namespace, "The namespace constructed does not match the expected namespace."

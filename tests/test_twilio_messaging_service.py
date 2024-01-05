@@ -69,9 +69,8 @@ def test_invalid_config(
         )
     with pytest.raises(AssertionError) as exception_info:
         TwilioMessagingService()
-    assert (
-        "Required environment variables TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN or TWILIO_NUMBER missing."
-        in str(exception_info.value)
+    assert "Required environment variables TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN or TWILIO_NUMBER missing." in str(
+        exception_info.value
     ), "The assertion raised does not match the assertion expected."
 
 
@@ -108,9 +107,8 @@ def test_invalid_twilio_messaging_service_alphanumeric_id(
 ) -> None:
     with pytest.raises(AssertionError) as exception_info:
         twilio_messaging_service_builder(alphanumeric_id)
-    assert (
-        "The alphanumeric sender Id can only contain up to 11 characters from the following categories:"
-        in str(exception_info.value)
+    assert "The alphanumeric sender Id can only contain up to 11 characters from the following categories:" in str(
+        exception_info.value
     ), "The assertion raised does not match the assertion expected."
 
 
