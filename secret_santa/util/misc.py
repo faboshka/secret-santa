@@ -1,3 +1,5 @@
+"""Miscellaneous utility functions."""
+
 from typing import TypeVar
 
 # A Generic type to be used as a generic type hint
@@ -5,8 +7,7 @@ T = TypeVar("T")  # Can be anything
 
 
 def is_derangement(list_a: list[T], list_b: list[T]) -> bool:
-    """
-    Check whether ``list_b`` is a derangement permutation of ``list_a``.
+    """Check whether ``list_b`` is a derangement permutation of ``list_a``.
 
     Note:
         This method does not check whether the two lists are a permutation of each other.

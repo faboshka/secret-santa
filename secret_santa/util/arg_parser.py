@@ -1,14 +1,15 @@
+"""Argument parsing."""
+
 import argparse
 
 from secret_santa.util import logging
 
 
 class SmartFormatter(argparse.HelpFormatter):
-    """A super class of argparse.HelpFormatter solemnly for allowing new lines in the ``argparser``'s help"""
+    """A super class of argparse.HelpFormatter solemnly for allowing new lines in the ``argparser``'s help."""
 
     def _split_lines(self, text: str, width: int) -> list[str]:
-        """
-        Split lines and preserve line breaks in case ``text`` starts with ``|R`` (indicating raw).
+        """Split lines and preserve line breaks in case ``text`` starts with ``|R`` (indicating raw).
 
         Args:
             text: The full string to be broken down according to the ``width`` given
@@ -33,8 +34,7 @@ class SmartFormatter(argparse.HelpFormatter):
 
 
 def get_secret_santa_argument_parser() -> argparse.ArgumentParser:
-    """
-    Initialize an instance of the secret santa ``argparser``.
+    """Initialize an instance of the secret santa ``argparser``.
 
     Returns:
         The argument parser constructed.

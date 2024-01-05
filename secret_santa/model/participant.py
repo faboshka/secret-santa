@@ -1,10 +1,11 @@
+"""Participant model."""
+
 from attr import dataclass
 
 
 @dataclass(eq=False, frozen=True)
 class Participant:
-    """
-    A data class which holds the Secret Santa participants' information.
+    """A data class which holds the Secret Santa participants' information.
 
     Attributes:
         full_name: The participant's full name.
@@ -19,8 +20,7 @@ class Participant:
 
     # TODO: Replace `ignore` with Self from typing once Python 3.11 is supported (and the type checker supports it).
     def __eq__(self, other) -> bool:  # type: ignore
-        """
-        Custom equals method for this data class to check if two participants are identical.
+        """Custom equals method for this data class to check if two participants are identical.
 
         Args:
             other: The other participant to check against ``self``.

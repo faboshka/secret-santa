@@ -1,9 +1,10 @@
+"""File utilities."""
+
 from os import PathLike
 
 
 def create_file(full_file_name: PathLike, content: str) -> None:
-    """
-    Create a new file containing the ``content`` at the path specified ``full_file_name``.
+    """Create a new file containing the ``content`` at the path specified ``full_file_name``.
 
     Args:
         full_file_name: Path (relative / absolute) to the file to be created.
@@ -15,8 +16,7 @@ def create_file(full_file_name: PathLike, content: str) -> None:
 
 
 def read_file(file_name: PathLike) -> str:
-    """
-    Read the contents of the file at ``file_name``.
+    """Read the contents of the file at ``file_name``.
 
     Args:
         file_name: Path (relative / absolute) to the file to be read.

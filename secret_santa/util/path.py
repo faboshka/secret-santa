@@ -1,9 +1,10 @@
+"""Path utilities."""
+
 from pathlib import Path
 
 
 def get_project_root() -> Path:
-    """
-    Get the path of the project's root directory.
+    """Get the path of the project's root directory.
 
     Returns:
         Path of the project's root directory.
