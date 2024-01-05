@@ -14,9 +14,8 @@ from dotenv import load_dotenv
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
 from secret_santa.model.participant import Participant
 from secret_santa.twilio_messaging_service import TwilioMessagingService
-from secret_santa.util import arg_parser, file
+from secret_santa.util import arg_parser, file, misc, path
 from secret_santa.util import logging as logging_util
-from secret_santa.util import misc, path
 
 # Set up the main logger
 logger = logging_util.get_logger("main")
@@ -100,9 +99,7 @@ class SecretSanta:
             f"Current number of participants: {len(participants_dict_list)}"
         )
         # Load the participants' dicts to a list of ``Participant``s
-        participants = [
-            Participant(**participant_dict) for participant_dict in participants_dict_list
-        ]
+        participants = [Participant(**participant_dict) for participant_dict in participants_dict_list]
         for participant in participants:
             self.logger.debug(f"Loaded: {participant}")
         return participants
@@ -137,11 +134,7 @@ class SecretSanta:
             The name of the participant as it'll appear in the message to be sent.
 
         """
-        return (
-            participant.nickname
-            if participant.nickname
-            else participant.full_name.strip().split()[0]
-        )
+        return participant.nickname if participant.nickname else participant.full_name.strip().split()[0]
 
     @staticmethod
     def get_secret_santa_message(participant: Participant, recipient: Participant) -> str:
@@ -161,9 +154,7 @@ class SecretSanta:
         # Recipient name to use
         recipient_msg_name = SecretSanta.get_participant_message_name(recipient)
         # Construct message
-        message_body = (
-            f"Hello {participant_msg_name},\n" f"You'll be {recipient_msg_name}'s Secret Santa!"
-        )
+        message_body = f"Hello {participant_msg_name},\n" f"You'll be {recipient_msg_name}'s Secret Santa!"
         return message_body
 
     def run(self) -> int:
@@ -228,9 +219,7 @@ def load_env(dotenv_path: Optional[PathLike] = None, override_system: bool = Fal
     logger.debug("Asserting Twilio configuration has been provided")
     required_env_vars = [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER]
     if not all([os.getenv(env) for env in required_env_vars]):
-        raise SystemExit(
-            f"One or more of the environment variables needed ({required_env_vars}) has not been passed."
-        )
+        raise SystemExit(f"One or more of the environment variables needed ({required_env_vars}) has not been passed.")
     logger.info("Environment loaded successfully")
 
 

@@ -63,7 +63,6 @@ def test_is_derangement_fails_on_lists_of_different_length(list1: list[T], list2
 def test_is_derangement_fails_on_lists_of_different_types(list1: list[T], list2: list[T]) -> None:
     with pytest.raises(AssertionError) as exception_info:
         misc.is_derangement(list1, list2)
-    assert (
-        "The two lists' elements must be of the same type to qualify for a derangement check"
-        in str(exception_info.value)
+    assert "The two lists' elements must be of the same type to qualify for a derangement check" in str(
+        exception_info.value
     ), "The assertion raised does not match the assertion expected."
