@@ -24,7 +24,9 @@ jobs:
       - name: Install poetry
         run: python -m pip install poetry
       - name: Install dependencies
-        run: poetry install --only main,test
+        run: |
+          poetry add pytest-github-actions-annotate-failures@latest --group=test
+          poetry install --only main,test
       - name: Run tests
         run: poetry run pytest tests --junitxml=junit.xml -n auto
       - name: Test reporter
@@ -35,3 +37,5 @@ jobs:
           path: junit.xml
           reporter: java-junit
           output-to: step-summary
+          only-summary: true
+          max-annotations: 0
