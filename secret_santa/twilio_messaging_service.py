@@ -1,3 +1,5 @@
+"""Twilio messaging service module."""
+
 import os
 import re
 from typing import Optional
@@ -11,11 +13,10 @@ from secret_santa.util import logging
 
 @dataclass(kw_only=True)
 class MessageResponse:
-    """
-    Custom message response class to hold the response of the send message call.
+    """Custom message response class to hold the response of the send message call.
 
     Attributes:
-        status (str): The status of the send message call.
+        status: The status of the send message call.
 
     """
 
@@ -23,23 +24,21 @@ class MessageResponse:
 
 
 class TwilioMessagingService:
-    """
-    Twilio Messaging Service Class.
+    """Twilio Messaging Service Class.
 
     Attributes:
-        logger (logging.Logger): The class logger.
-        twilio_number (str): The Twilio number the messages will be sent from.
-        alphanumeric_id (str | None): An alphanumeric string which, if provided, will appear as the sender ID in the
+        logger: The class logger.
+        twilio_number: The Twilio number the messages will be sent from.
+        alphanumeric_id: An alphanumeric string which, if provided, will appear as the sender ID in the
             message to be sent.
             Warning: Please see the Twilio article on countries permitted to use the alphanumeric sender ID /
             whether pre-registration is needed.
-        twilio_client (Client): An instance of the twilio messaging client.
+        twilio_client: An instance of the twilio messaging client.
 
     """
 
     def __init__(self, alphanumeric_id: Optional[str] = None) -> None:
-        """
-        Initialize the Twilio messaging service.
+        """Initialize the Twilio messaging service.
 
         Args:
             alphanumeric_id: Alphanumeric sender ID which will be shown instead of the number.
@@ -84,9 +83,9 @@ class TwilioMessagingService:
         self.logger.debug("Twilio client initialized")
 
     def load_twilio_config(self) -> tuple[str, str, str]:
-        """
-        Load the Twilio service configuration / secrets from the environment variables and assert
-        everything needed is present.
+        """Load the Twilio service configuration / secrets from the environment variables.
+
+        This function asserts everything needed is present.
 
         Returns:
             The loaded ``TWILIO_NUMBER``, ``TWILIO_ACCOUNT_SID``, and ``TWILIO_AUTH_TOKEN`` in this specific order.
@@ -113,8 +112,7 @@ class TwilioMessagingService:
         *,
         dry_run: bool,
     ) -> MessageResponse:
-        """
-        Send a text message with the string specified in the ``body`` to the number specified in ``to``.
+        """Send a text message with the string specified in the ``body`` to the number specified in ``to``.
 
         Args:
             body: The message to be sent to the number specified in the ``to`` parameter.

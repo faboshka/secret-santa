@@ -1,3 +1,5 @@
+"""Base secret santa module."""
+
 import copy
 import json
 import logging
@@ -22,15 +24,14 @@ logger = logging_util.get_logger("main")
 
 
 class SecretSanta:
-    """
-    Secret Santa Class.
+    """Secret Santa Class.
 
     Attributes:
-        logger (logging.Logger): The class logger.
-        participants (list[Participant]): A list of the Secret Santa participants.
-        messaging_client (TwilioMessagingService): An instance of the messaging client.
-        show_arrangement (bool): If ``True``, the relevant method will print the arrangement once it's calculated.
-        dry_run (bool): If ``True``, the class methods will run a dry run (not execute some things,
+        logger: The class logger.
+        participants: A list of the Secret Santa participants.
+        messaging_client: An instance of the messaging client.
+        show_arrangement: If ``True``, the relevant method will print the arrangement once it's calculated.
+        dry_run: If ``True``, the class methods will run a dry run (not execute some things,
             e.g. it won't actually send a message).
 
     """
@@ -42,8 +43,7 @@ class SecretSanta:
         *,
         dry_run: bool,
     ) -> None:
-        """
-        Initialize the Secret Santa game class.
+        """Initialize the Secret Santa game class.
 
         Args:
             participants_json_path: Path to the "Secret Santa" participants JSON.
@@ -80,8 +80,7 @@ class SecretSanta:
         self.logger.info("SecretSanta class initialized")
 
     def load_participants(self, participants_json_path: PathLike) -> list[Participant]:
-        """
-        Read the JSON file at ``participants_json_path`` and load it into a list of participants.
+        """Read the JSON file at ``participants_json_path`` and load it into a list of participants.
 
         Args:
             participants_json_path: Path to the "Secret Santa" participants JSON.
@@ -105,9 +104,9 @@ class SecretSanta:
         return participants
 
     def get_participants_derangement(self) -> list[Participant]:
-        """
-        Create and return a new list of the participants loaded to the class after a random derangement permutation,
-        most likely to be used as the recipients.
+        """Create and return a new list of the participants loaded to the class after a random derangement permutation.
+
+        This list of participant will most likely to be used as the recipients.
 
         Returns:
             List of participants loaded to the class after a random derangement permutation.
@@ -123,8 +122,8 @@ class SecretSanta:
 
     @staticmethod
     def get_participant_message_name(participant: Participant) -> str:
-        """
-        Get the name of the participant as it'll appear in the message to be sent.
+        """Get the name of the participant as it'll appear in the message to be sent.
+
         If the participant has a nickname, return it, otherwise, return the first part of their full name.
 
         Args:
@@ -138,8 +137,7 @@ class SecretSanta:
 
     @staticmethod
     def get_secret_santa_message(participant: Participant, recipient: Participant) -> str:
-        """
-        Construct a message based on the participant and recipient's data.
+        """Construct a message based on the participant and recipient's data.
 
         Args:
             participant: The participant's data, i.e. the gift giver.
@@ -158,8 +156,9 @@ class SecretSanta:
         return message_body
 
     def run(self) -> int:
-        """
-        Find a recipient for each participant and send the participant a message using the messaging client initialized.
+        """Find a recipient for each participant and send the participant a message.
+
+        The message is to be sent using the messaging client initialized.
 
         Returns:
             0 in case everything runs successfully. Non-Zero code otherwise.
@@ -187,8 +186,7 @@ class SecretSanta:
 
 
 def load_env(dotenv_path: Optional[PathLike] = None, override_system: bool = False) -> None:
-    """
-    Check whether the environment has been configured correctly and the secrets needed has been passed.
+    """Check whether the environment has been configured correctly and the secrets needed has been passed.
 
     Args:
         dotenv_path: Custom path to the .env file. If omitted, will try to look for the ``{project_root}/.env`` file.
@@ -224,8 +222,7 @@ def load_env(dotenv_path: Optional[PathLike] = None, override_system: bool = Fal
 
 
 def main() -> int:
-    """
-    The module's main function.
+    """The module's main function.
 
     Returns:
         Zero in case the ``SecretSanta`` class is initialized and run as should be, non-Zero code otherwise.

@@ -1,3 +1,5 @@
+"""Secret Santa's main entry point."""
+
 import sys
 
 if __name__ == "__main__":

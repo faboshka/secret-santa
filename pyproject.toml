@@ -34,12 +34,21 @@ line-length = 120
 select = [
     # Pyflakes
     "F",
-    # Pycodestyle
+    # pycodestyle
     "E",
     "W",
     # isort
     "I",
+    # pydocstyle
+    "D",
 ]
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"**/{tests}/*.py" = ["D"]
+
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

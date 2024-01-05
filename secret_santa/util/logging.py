@@ -1,3 +1,5 @@
+"""logging utilities."""
+
 import logging
 from typing import Optional
 
@@ -15,6 +17,7 @@ class CustomLogFormatter(logging.Formatter):
     """A super class of ``logging.Formatter`` solemnly for custom log message formatting."""
 
     def format(self, record: logging.LogRecord) -> str:
+        """Override ``logging.Formatter.format`` to add a custom log message format."""
         record.message = record.getMessage()
         location = f"{record.module}.{record.name}().{record.funcName}"
         msg = f'{f"[{record.levelname}]".ljust(10)} {location.ljust(39)} : {record.message}'
@@ -23,8 +26,7 @@ class CustomLogFormatter(logging.Formatter):
 
 
 def get_common_handler() -> logging.Handler:
-    """
-    Initialize a ``logging.Handler`` with the custom formatting defined in ``LoggingUtils``.
+    """Initialize a ``logging.Handler`` with the custom formatting defined in ``LoggingUtils``.
 
     Returns:
         A logging handler with the custom formatter specified in LoggingUtils.
@@ -41,8 +43,7 @@ def get_logger(
     handlers: Optional[list[logging.Handler]] = None,
     add_common_handler: bool = True,
 ) -> logging.Logger:
-    """
-    Get a logger named according to the ``name`` and attach the handlers passed from the caller to it.
+    """Get a logger named according to the ``name`` and attach the handlers passed from the caller to it.
 
     Args:
         name: The name of the logger to retrieve.
