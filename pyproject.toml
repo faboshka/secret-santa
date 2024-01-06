@@ -98,7 +98,7 @@ mypy = { cmd = "mypy {all_paths}", use_vars = true, help = "run mypy on sources 
 post_mypy = { cmd = "echo 'Done running the \"mypy\" task!'" }
 
 pre_test = { cmd = "echo 'Running the \"test\" task...'" }
-test = { cmd = "pytest -v {tests_only}", use_vars = true, help = "run all tests." }
+test = { cmd = "pytest -v {tests_only} -n auto", use_vars = true, help = "run all tests." }
 post_test = { cmd = "echo 'Done running the \"test\" task!'" }
 
 pre_format = { cmd = "echo 'Running the \"format\" task...'" }
