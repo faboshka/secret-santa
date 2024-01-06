@@ -18,11 +18,18 @@ from secret_santa.secret_santa_module import SecretSanta, load_env
 from secret_santa.util import misc
 
 
+# TODO: Remove in refactor and get rid of env load as this has some unintended side effects
 @pytest.fixture(autouse=True)
 def clear_environment(mocker: MockerFixture) -> Iterator:
+    def is_github_environment_variable(name: str) -> bool:
+        return any(name.startswith(gh_env_prefix) for gh_env_prefix in ["GITHUB_", "RUNNER_"])
+
     # This is essentially a pretest to clear the environment, as all tests run in the same session
     # with environment variables loaded from another tests.
-    mocker.patch.dict(os.environ, {}, clear=True)
+    # Note:
+    #   Until this is taken care of properly - the GitHub actions environment variables should not be cleared if exists.
+    github_env_variables = {key: val for key, val in os.environ.items() if is_github_environment_variable(key)}
+    mocker.patch.dict(os.environ, {**github_env_variables}, clear=True)
     yield
 
 
