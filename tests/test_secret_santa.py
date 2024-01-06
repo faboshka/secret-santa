@@ -21,12 +21,14 @@ from secret_santa.util import misc
 # TODO: Remove in refactor and get rid of env load as this has some unintended side effects
 @pytest.fixture(autouse=True)
 def clear_environment(mocker: MockerFixture) -> Iterator:
+    def is_github_environment_variable(name: str) -> bool:
+        return any(name.startswith(gh_env_prefix) for gh_env_prefix in ["GITHUB_", "RUNNER_"])
+
     # This is essentially a pretest to clear the environment, as all tests run in the same session
     # with environment variables loaded from another tests.
     # Note:
     #   Until this is taken care of properly - the GitHub actions environment variables should not be cleared if exists.
-    is_github_env_var = lambda key: any(key.startswith(gh_env_prefix) for gh_env_prefix in ["GITHUB_", "RUNNER_"])
-    github_env_variables = {key: val for key, val in os.environ.items() if is_github_env_var(key)}
+    github_env_variables = {key: val for key, val in os.environ.items() if is_github_environment_variable(key)}
     mocker.patch.dict(os.environ, {**github_env_variables}, clear=True)
     yield
 
@@ -163,7 +165,6 @@ def test_env_file_value_override_existing(
     system_values: list[tuple[str, str]],
     expected: list[tuple[str, str]],
 ) -> None:
-    assert False
     for env_key, env_value in system_values:
         monkeypatch.setenv(env_key, env_value)
     load_env(dotenv_path=test_env_file_path, override_system=override_system)
