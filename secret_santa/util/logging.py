@@ -16,13 +16,13 @@ logging_levels: dict[str, int] = {
 class CustomLogFormatter(logging.Formatter):
     """A super class of ``logging.Formatter`` solemnly for custom log message formatting."""
 
-    def format(self, record: logging.LogRecord) -> str:
+    def format(self, record: logging.LogRecord) -> str:  # noqa: A003
         """Override ``logging.Formatter.format`` to add a custom log message format."""
         record.message = record.getMessage()
         location = f"{record.module}.{record.name}().{record.funcName}"
         msg = f'{f"[{record.levelname}]".ljust(10)} {location.ljust(39)} : {record.message}'
         record.msg = msg
-        return super(CustomLogFormatter, self).format(record)
+        return super().format(record)
 
 
 def get_common_handler() -> logging.Handler:
