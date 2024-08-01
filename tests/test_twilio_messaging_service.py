@@ -3,7 +3,7 @@ from typing import Callable, Optional
 
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 from pytest_mock import MockerFixture
 
 from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
@@ -116,8 +116,8 @@ def test_invalid_twilio_messaging_service_alphanumeric_id(
     ("twilio_messaging_service_", "dry_run"),
     itertools.product(
         [
-            lazy_fixture("twilio_messaging_service"),
-            lazy_fixture("twilio_messaging_service_alphanumeric_id_secret_santa"),
+            lf("twilio_messaging_service"),
+            lf("twilio_messaging_service_alphanumeric_id_secret_santa"),
         ],
         [False, True],
     ),

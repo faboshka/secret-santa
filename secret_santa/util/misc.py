@@ -30,7 +30,7 @@ def is_derangement(list_a: list[T], list_b: list[T]) -> bool:
         f"The two lists must be of the same size to qualify for a derangement check: " f"{len(list_a)} != {len(list_b)}"
     )
     # Assert the two lists contain items of the same type
-    assert not any([True if type(x) != type(y) else False for x, y in zip(list_a, list_b)]), (
+    assert not any([True if type(x) != type(y) else False for x, y in zip(list_a, list_b)]), (  # noqa: E721
         f"The two lists' elements must be of the same type to qualify for a derangement check: "
         f"{type(list_a[0])} != {type(list_b[0])}"
     )
