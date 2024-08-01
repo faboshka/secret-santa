@@ -3,23 +3,24 @@
 The `secret-santa` package is a _Secret Santa_ 🎅🎄 game which randomly assigns and notifies people to whom they should give a gift using _Twilio_'s messaging API.
 
 [![Test Workflow on Main](https://github.com/FawziAS/secret-santa/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/FawziAS/secret-santa/actions/workflows/test.yml)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/format.json)](https://github.com/astral-sh/ruff)
 
 <details>
   <summary>Table of Contents</summary>
 
-  1. [Why?](#why)
-     1. [But WHY is it over-engineered?](#but-why-is-it-over-engineered)
-  2. [Usage](#usage)
-     1. [Prerequisites](#prerequisites)
-     2. [Configs and Environment Needed](#configs-and-environment-needed)
-     3. [Installing the Dependencies](#installing-the-dependencies)
-     4. [Running](#running)
-  3. [Future Plans](#future-plans)
-  4. [Contributing](#contributing)
-     1. [So... How can I contribute?](#so-how-can-i-contribute)
-  5. [License](#license)
-  6. [Who](#who)
+- [Secret Santa](#secret-santa)
+  - [Why?](#why)
+    - [But WHY is it over-engineered?](#but-why-is-it-over-engineered)
+  - [Usage](#usage)
+    - [Prerequisites](#prerequisites)
+    - [Configs and Environment Needed](#configs-and-environment-needed)
+    - [Installing the Dependencies](#installing-the-dependencies)
+    - [Running](#running)
+  - [Future Plans](#future-plans)
+  - [Contributing](#contributing)
+    - [So... How can I contribute?](#so-how-can-i-contribute)
+  - [License](#license)
+  - [Who](#who)
 </details>
 
 ## Why?

@@ -1,5 +1,7 @@
 """Participant model."""
 
+from typing import Self
+
 from attr import dataclass
 
 
@@ -19,7 +21,7 @@ class Participant:
     nickname: str | None = None
 
     # TODO: Replace `ignore` with Self from typing once Python 3.11 is supported (and the type checker supports it).
-    def __eq__(self, other) -> bool:  # type: ignore
+    def __eq__(self, other: Self) -> bool:  # type: ignore
         """Custom equals method for this data class to check if two participants are identical.
 
         Args:

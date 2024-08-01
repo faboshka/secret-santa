@@ -22,7 +22,7 @@ class CustomLogFormatter(logging.Formatter):
         location = f"{record.module}.{record.name}().{record.funcName}"
         msg = f'{f"[{record.levelname}]".ljust(10)} {location.ljust(39)} : {record.message}'
         record.msg = msg
-        return super(CustomLogFormatter, self).format(record)
+        return super().format(record)
 
 
 def get_common_handler() -> logging.Handler:

@@ -43,14 +43,34 @@ select = [
     "I",
     # pydocstyle
     "D",
+    # mccabe
+    "C90",
+    # pep8-naming
+    "N",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+    # Perflint
+    "PERF",
+    # tryceratops
+    "TRY",
+    # flynt
+    "FLY",
+    # pylint
+    "PL",
+    # pyflakes
+    "YTT", "ANN", "ASYNC", "BLE", "B", "A", "C4", "DTZ", "T10", "EM", "EXE", "ICN", "PTH", "ARG", "TCH", "TID", 
+    "SIM", "SLOT", "SLF", "RET", "RSE", "Q", "PT", "PYI", "T20", "PIE", "INP", "G", # TODO: "S", "FBT", "FA",
 ]
+ignore = ["ANN101", "G004"]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
 unfixable = []
 
 
 [tool.ruff.lint.per-file-ignores]
-"**/{tests}/*.py" = ["D"]
+"**/{tests}/*.py" = ["D", "S"]
 
 
 [tool.ruff.lint.pydocstyle]
