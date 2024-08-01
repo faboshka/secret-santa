@@ -7,7 +7,7 @@ from typing import Generator, Iterator
 import pytest
 from _pytest.capture import CaptureFixture
 from _pytest.monkeypatch import MonkeyPatch
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 from pytest_mock import MockerFixture
 
 import secret_santa.secret_santa_module
@@ -317,10 +317,10 @@ def test_load_participants(
 @pytest.mark.parametrize(
     ("participant", "expected_message_name"),
     [
-        (lazy_fixture("participant_john_jd_doe"), "J.D."),
-        (lazy_fixture("participant_jane_doe"), "Jane"),
-        (lazy_fixture("participant_richard_rich_roe"), "Rich"),
-        (lazy_fixture("participant_howard"), "Howard"),
+        (lf("participant_john_jd_doe"), "J.D."),
+        (lf("participant_jane_doe"), "Jane"),
+        (lf("participant_richard_rich_roe"), "Rich"),
+        (lf("participant_howard"), "Howard"),
     ],
 )
 def test_get_participant_message_name(
@@ -350,13 +350,13 @@ def test_participants_derangement(
     ("participant", "recipient", "expected_message"),
     [
         (
-            lazy_fixture("participant_john_jd_doe"),
-            lazy_fixture("participant_jane_doe"),
+            lf("participant_john_jd_doe"),
+            lf("participant_jane_doe"),
             "Hello J.D.,\nYou'll be Jane's Secret Santa!",
         ),
         (
-            lazy_fixture("participant_howard"),
-            lazy_fixture("participant_richard_rich_roe"),
+            lf("participant_howard"),
+            lf("participant_richard_rich_roe"),
             "Hello Howard,\nYou'll be Rich's Secret Santa!",
         ),
     ],

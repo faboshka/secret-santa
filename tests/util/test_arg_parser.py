@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import Sequence
 
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from secret_santa.util import arg_parser
 
@@ -48,7 +48,7 @@ def default_namespace() -> Namespace:
                 env_path="dummy_env_path",
             ),
         ),
-        ("", lazy_fixture("default_namespace")),  # No arguments provided
+        ("", lf("default_namespace")),  # No arguments provided
     ],
 )
 def test_arg_parser(

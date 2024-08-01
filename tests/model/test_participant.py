@@ -1,5 +1,5 @@
 import pytest
-from pytest_lazyfixture import lazy_fixture
+from pytest_lazy_fixtures import lf
 
 from secret_santa.model.participant import Participant
 
@@ -18,12 +18,8 @@ def participant_john_nicknamed_johnny() -> Participant:
 @pytest.mark.parametrize(
     ("participant1", "participant2", "same"),
     [
-        (lazy_fixture("participant_john"), lazy_fixture("participant_john"), True),
-        (
-            lazy_fixture("participant_john"),
-            lazy_fixture("participant_john_nicknamed_johnny"),
-            False,
-        ),
+        (lf("participant_john"), lf("participant_john"), True),
+        (lf("participant_john"), lf("participant_john_nicknamed_johnny"), False),
     ],
 )
 def test_participant_eq(participant1: Participant, participant2: Participant, same: bool) -> None:

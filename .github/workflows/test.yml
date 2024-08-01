@@ -30,7 +30,7 @@ jobs:
       - name: Run tests
         run: poetry run pytest tests --junitxml=junit.xml -n auto
       - name: Test reporter
-        uses: phoenix-actions/test-reporting@v12
+        uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
           name: Secret Santa tests on ${{ matrix.os }} (Python ${{ matrix.python-version }}) Report
