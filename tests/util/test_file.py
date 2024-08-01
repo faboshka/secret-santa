@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import pytest
@@ -27,11 +26,11 @@ def test_create_file(tests_temp_directory: Path) -> None:
     new_file_content: str = "This is a simple text file creation to test create_file()"
     try:
         file.create_file(full_file_name=new_file_path, content=new_file_content)
-        assert os.path.exists(new_file_path), f"A new txt file ({new_file_path}) should've been created"
+        assert new_file_path.exists(), f"A new txt file ({new_file_path}) should've been created"
         read_content: str = file.read_file(new_file_path)
         assert (
             read_content == new_file_content
         ), f"The file {new_file_path} created did not contain the intended content."
     finally:
-        if os.path.exists(new_file_path):
-            os.remove(new_file_path)
+        if new_file_path.exists():
+            new_file_path.unlink()

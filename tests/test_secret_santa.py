@@ -1,11 +1,10 @@
 import itertools
+import json
 import os
 from argparse import Namespace
 from pathlib import Path
-from typing import Generator, Iterator
 
 import pytest
-from _pytest.capture import CaptureFixture
 from _pytest.monkeypatch import MonkeyPatch
 from pytest_lazy_fixtures import lf
 from pytest_mock import MockerFixture
@@ -20,7 +19,7 @@ from secret_santa.util import misc
 
 # TODO: Remove in refactor and get rid of env load as this has some unintended side effects
 @pytest.fixture(autouse=True)
-def clear_environment(mocker: MockerFixture) -> Iterator:
+def _clear_environment(mocker: MockerFixture) -> None:
     def is_github_environment_variable(name: str) -> bool:
         return any(name.startswith(gh_env_prefix) for gh_env_prefix in ["GITHUB_", "RUNNER_"])
 
@@ -30,7 +29,6 @@ def clear_environment(mocker: MockerFixture) -> Iterator:
     #   Until this is taken care of properly - the GitHub actions environment variables should not be cleared if exists.
     github_env_variables = {key: val for key, val in os.environ.items() if is_github_environment_variable(key)}
     mocker.patch.dict(os.environ, {**github_env_variables}, clear=True)
-    yield
 
 
 @pytest.fixture()
@@ -206,7 +204,6 @@ def test_load_env_without_env_file_with_predefined_env(
 def test_module_main(
     mocker: MockerFixture,
     monkeypatch: MonkeyPatch,
-    capsys: Generator[CaptureFixture[str], None, None],
     test_participants_file_path: Path,
     dry_run: bool,
     show_arrangement: bool,
@@ -226,6 +223,8 @@ def test_module_main(
             show_arrangement=show_arrangement,
         ),
     )
+
+    num_of_participants = len(json.loads(test_participants_file_path.read_text("utf-8")))
     # TODO: Capture the output and check the "->" of the show arrangement appears in the log
     #  in case it is True / if "Dry run" appears in the log in case it is a dry run.
     assert (
@@ -235,8 +234,8 @@ def test_module_main(
         create_message_mock.assert_not_called()
     else:
         assert (
-            create_message_mock.call_count == 3
-        ), "The `create` method of the Twilio API was not called the number of times expected 3."
+            create_message_mock.call_count == num_of_participants
+        ), f"The `create` method of the Twilio API was not called the number of times expected {num_of_participants}."
 
 
 @pytest.mark.parametrize(
@@ -335,9 +334,8 @@ def test_get_participant_message_name(
 
 @pytest.mark.parametrize("execution_number", range(9))
 def test_participants_derangement(
-    execution_number: int,
+    execution_number: int,  # noqa: ARG001
     default_secret_santa_instance: SecretSanta,
-    participants_in_participants_file: list[Participant],
 ) -> None:
     participants_derangement = default_secret_santa_instance.get_participants_derangement()
     assert misc.is_derangement(

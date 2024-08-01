@@ -32,12 +32,9 @@ def test_is_derangement_valid_input(list1: list[T], list2: list[T], is_derangeme
 def test_is_derangement_fails_on_empty_list(list1: list[T], list2: list[T]) -> None:
     with pytest.raises(AssertionError) as exception_info:
         misc.is_derangement(list1, list2)
-    # fmt: off
-    assert (
-        "The two lists must contain at least one element to qualify for a derangement check"
-        in str(exception_info.value)
-    ), "The assertion raised does not match the assertion expected."  # fmt: on adds redundant parenthesis on this line
-    # fmt: on
+    assert "The list must not be empty to qualify for a derangement check" in str(
+        exception_info.value
+    ), "The assertion raised does not match the assertion expected."
 
 
 @pytest.mark.parametrize(
@@ -50,7 +47,7 @@ def test_is_derangement_fails_on_lists_of_different_length(list1: list[T], list2
     with pytest.raises(AssertionError) as exception_info:
         misc.is_derangement(list1, list2)
     assert "The two lists must be of the same size to qualify for a derangement check" in str(
-        exception_info.value
+        exception_info.value,
     ), "The assertion raised does not match the assertion expected."
 
 
@@ -64,5 +61,5 @@ def test_is_derangement_fails_on_lists_of_different_types(list1: list[T], list2:
     with pytest.raises(AssertionError) as exception_info:
         misc.is_derangement(list1, list2)
     assert "The two lists' elements must be of the same type to qualify for a derangement check" in str(
-        exception_info.value
+        exception_info.value,
     ), "The assertion raised does not match the assertion expected."

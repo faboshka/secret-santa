@@ -66,7 +66,7 @@ class TwilioMessagingService:
         if alphanumeric_id:
             # Assert at least one character exists
             assert bool(
-                re.search("[a-zA-Z]", alphanumeric_id)
+                re.search("[a-zA-Z]", alphanumeric_id),
             ), "The alphanumeric sender Id needs to contain at least one character"
             # Assert the alphanumeric sender ID is up to Twilio's requirements
             assert bool(re.search(r"^[a-zA-Z0-9 ]{1,11}$", alphanumeric_id)), (

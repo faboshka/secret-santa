@@ -30,7 +30,7 @@ class SmartFormatter(argparse.HelpFormatter):
                     lines.extend(textwrap.wrap(line, width))
             return lines
             # This is the RawTextHelpFormatter._split_lines
-        return argparse.HelpFormatter._split_lines(self, text, width)
+        return argparse.HelpFormatter._split_lines(self, text, width)  # noqa: SLF001
 
 
 def get_secret_santa_argument_parser() -> argparse.ArgumentParser:

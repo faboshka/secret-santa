@@ -13,7 +13,7 @@ from typing import Optional
 import pyfiglet
 from dotenv import load_dotenv
 
-from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
+from secret_santa.const import MINIMUM_NUMBER_OF_PARTICIPANTS, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
 from secret_santa.model.participant import Participant
 from secret_santa.twilio_messaging_service import TwilioMessagingService
 from secret_santa.util import arg_parser, file, misc, path
@@ -39,8 +39,8 @@ class SecretSanta:
     def __init__(
         self,
         participants_json_path: Optional[PathLike] = None,
-        show_arrangement: bool = False,
         *,
+        show_arrangement: bool = False,
         dry_run: bool,
     ) -> None:
         """Initialize the Secret Santa game class.
@@ -63,7 +63,7 @@ class SecretSanta:
             participants_json_path = path.get_project_root() / "participants.json"
             self.logger.debug("Attempting to look for a participants file at root level")
         assert Path(
-            participants_json_path
+            participants_json_path,
         ).exists(), f"Could not find the participants JSON file @ {participants_json_path}"
 
         self.logger.debug("Loading the participants")
@@ -93,7 +93,7 @@ class SecretSanta:
         participants_json: str = file.read_file(Path(participants_json_path))
         # Convert the JSON string to a list of dicts
         participants_dict_list = json.loads(participants_json)
-        assert len(participants_dict_list) > 2, (
+        assert len(participants_dict_list) >= MINIMUM_NUMBER_OF_PARTICIPANTS, (
             f"Secret Santa should have at least 3 participants. "
             f"Current number of participants: {len(participants_dict_list)}"
         )
@@ -151,9 +151,7 @@ class SecretSanta:
         participant_msg_name = SecretSanta.get_participant_message_name(participant)
         # Recipient name to use
         recipient_msg_name = SecretSanta.get_participant_message_name(recipient)
-        # Construct message
-        message_body = f"Hello {participant_msg_name},\n" f"You'll be {recipient_msg_name}'s Secret Santa!"
-        return message_body
+        return f"Hello {participant_msg_name},\nYou'll be {recipient_msg_name}'s Secret Santa!"
 
     def run(self) -> int:
         """Find a recipient for each participant and send the participant a message.
@@ -174,14 +172,14 @@ class SecretSanta:
             if self.show_arrangement:
                 self.logger.info(
                     f"{SecretSanta.get_participant_message_name(participant)} -> "
-                    f"{SecretSanta.get_participant_message_name(recipient)}"
+                    f"{SecretSanta.get_participant_message_name(recipient)}",
                 )
             response = self.messaging_client.send_message(
                 SecretSanta.get_secret_santa_message(participant, recipient),
                 participant.phone_number,
                 dry_run=self.dry_run,
             )
-            logger.info(f"Message sent to: {participant}, " f"Status: {response.status}")
+            logger.info(f"Message sent to: {participant}, Status: {response.status}")
         return 0
 
 
@@ -209,15 +207,17 @@ def load_env(dotenv_path: Optional[PathLike] = None, override_system: bool = Fal
             logger.warning(f"No .env file could be found at: {dotenv_path}")
             # load_dotenv won't fail in case the file does not exist and setting it to an empty
             # string would prevent it from looking for a `.env` file.
-            dotenv_path = Path("")
+            dotenv_path = Path()
 
     load_dotenv(dotenv_path=dotenv_path, override=override_system)
 
     # Make sure the needed Twilio configuration environment variables are provided
     logger.debug("Asserting Twilio configuration has been provided")
     required_env_vars = [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER]
-    if not all([os.getenv(env) for env in required_env_vars]):
-        raise SystemExit(f"One or more of the environment variables needed ({required_env_vars}) has not been passed.")
+    if not all(os.getenv(env) for env in required_env_vars):
+        # TODO: Add custom errors, error strings, and exceptions
+        environment_err = f"One or more of the environment variables needed ({required_env_vars}) has not been passed."
+        raise SystemExit(environment_err)
     logger.info("Environment loaded successfully")
 
 
@@ -229,7 +229,7 @@ def main() -> int:
 
     """
     secret_santa_figlet = pyfiglet.figlet_format("Secret  Santa")
-    print(secret_santa_figlet)
+    print(secret_santa_figlet)  # noqa: T201
     time.sleep(0.5)
     # Parse the provided arguments
     parser = arg_parser.get_secret_santa_argument_parser()
