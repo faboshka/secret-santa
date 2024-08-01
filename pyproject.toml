@@ -71,6 +71,10 @@ warn_return_any = true
 warn_unused_ignores = true
 warn_unused_configs = true
 
+[[tool.mypy.overrides]]
+module = ["pyfiglet", "twilio.rest.*"]
+ignore_missing_imports = true
+
 [tool.taskipy.variables]
 all_paths = "secret_santa/ tests/"
 sources_only = "secret_santa/"
