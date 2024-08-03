@@ -1,16 +1,32 @@
 """logging utilities."""
 
 import logging
+from enum import StrEnum, auto
 from typing import Optional
 
-logging_levels: dict[str, int] = {
-    "critical": logging.CRITICAL,
-    "error": logging.ERROR,
-    "warn": logging.WARNING,
-    "warning": logging.WARNING,
-    "info": logging.INFO,
-    "debug": logging.DEBUG,
+
+class LoggingLevel(StrEnum):
+    """App supported logging levels."""
+
+    critical = auto()
+    error = auto()
+    warning = auto()
+    info = auto()
+    debug = auto()
+
+
+LOGGING_LEVEL_TO_NUMBER: dict[LoggingLevel, int] = {
+    LoggingLevel.critical: logging.CRITICAL,
+    LoggingLevel.error: logging.ERROR,
+    LoggingLevel.warning: logging.WARNING,
+    LoggingLevel.info: logging.INFO,
+    LoggingLevel.debug: logging.DEBUG,
 }
+
+
+def logging_level_to_number(log_level: LoggingLevel) -> int:
+    """Logging level to number."""
+    return logging.getLevelNamesMapping()[str(log_level).upper()]
 
 
 class CustomLogFormatter(logging.Formatter):

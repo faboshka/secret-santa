@@ -39,8 +39,8 @@ And I know this could be written in one file - with a handful of code lines, but
 
 To be able to install the project's dependencies, you need to have:
 
-* [_Python_](https://www.python.org/) (>= _3.10.0_)
-* [_Poetry_](https://python-poetry.org/) (>= _1.0.0_)
+* [_Python_](https://www.python.org/) (>= _3.12.0_)
+* [_Poetry_](https://python-poetry.org/) (>= _1.8.0_)
 * [_Twilio_](https://www.twilio.com/) account with an active phone number
 
 A few notes:
@@ -97,53 +97,34 @@ poetry install
 To run the _Secret Santa_ package / module, all you need to do after setting it up is run:
 
 ```bash
-python secret_santa
+poetry run secret_santa
 ```
 
-with the appropriate arguments.
+with the appropriate commands / arguments.
 
-To see all the supported command-line arguments, run `python secret_santa --help`.
+To see all the supported command-line arguments, run `poetry run secret_santa --help`.
 
 <details>
   <summary>The command-line arguments supported</summary>
   
   ```console
-  ❯ python secret_santa --help
-   ____                     _      ____              _
-  / ___|  ___  ___ _ __ ___| |_   / ___|  __ _ _ __ | |_ __ _
-  \___ \ / _ \/ __| '__/ _ \ __|  \___ \ / _` | '_ \| __/ _` |
-   ___) |  __/ (__| | |  __/ |_    ___) | (_| | | | | || (_| |
-  |____/ \___|\___|_|  \___|\__|  |____/ \__,_|_| |_|\__\__,_|
-  
-  
-  usage: secret_santa [-h] [--env-path ENV_PATH] [--participants-path PARTICIPANTS_PATH] [--show-arrangement] [--dry-run] [-log {critical,error,warn,warning,info,debug}]
-  
-  Welcome to the Secret Santa Organizer, in which each participant gets one other participant assigned, to whom he should bring a gift!
-  
-  options:
-    -h, --help            show this help message and exit
-    --env-path ENV_PATH   path to the .env file containing the required secrets
-                          If omitted - will try to load the "{project_root}/.env".
-                          --> Note: No error will be raised in case --env-path is not provided and no "{project_root}/.env" exists.
-    --participants-path PARTICIPANTS_PATH
-                          path to the "Secret Santa" participants JSON
-                          If omitted - will try to load "{project_root}/participants.json".
-    --show-arrangement    show the final arrangement (participant -> receiver)
-                          --> Note: The --show-arrangement is shown as logged INFO, which means setting the logger any higher will not show the arrangements as expected.
-                          --> Personal Request: Please keep it fun and use this only for development-testing purposes / if you're a non-participating admin.
-    --dry-run             run the program without actually sending the message
-    -log {critical,error,warn,warning,info,debug}, --logging-level {critical,error,warn,warning,info,debug}
-                          set the main logging level of the program loggers (Defaults to "info")
-  
-  Merry Christmas! and have lots of fun :)
+  ❯ poetry run secret_santa run --help
+                                                                                                                                                                                                         
+   Usage: secret_santa run [OPTIONS]                                                                                                                                                                       
+                                                                                                                                                                                                           
+   run the secret santa game                                                                                                                                                                               
+                                                                                                                                                                                                           
+  ╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ *  --participants-path                          PATH                                 path to the 'Secret Santa' participants JSON [default: None] [required]                                          │
+  │    --env-path                                   PATH                                 path to the 'Secret Santa' environment [default: None]                                                           │
+  │    --show-arrangement     --hide-arrangement                                         show the final arrangement (participant -> receiver) [default: hide-arrangement]                                 │
+  │    --logging-level                              [critical|error|warning|info|debug]  logging level [default: info]                                                                                    │
+  │    --dry-run              --no-dry-run                                               run the program without actually sending the message [default: no-dry-run]                                       │
+  │    --help                                                                            Show this message and exit.                                                                                      │
+  ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
 ```
 </details>
-
-**_Note:_** The program could alternatively be run as a module:
-
-```bash
-python -m secret_santa
-```
 
 ## Future Plans
 

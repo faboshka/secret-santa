@@ -1,7 +1,6 @@
 import itertools
 import json
 import os
-from argparse import Namespace
 from pathlib import Path
 
 import pytest
@@ -9,12 +8,13 @@ from _pytest.monkeypatch import MonkeyPatch
 from pytest_lazy_fixtures import lf
 from pytest_mock import MockerFixture
 
-import secret_santa.secret_santa_module
 from secret_santa import __version__
-from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
+from secret_santa.client import app
+from secret_santa.const import ENCODING, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
 from secret_santa.model.participant import Participant
 from secret_santa.secret_santa_module import SecretSanta, load_env
 from secret_santa.util import misc
+from secret_santa.util.logging import LoggingLevel
 
 
 # TODO: Remove in refactor and get rid of env load as this has some unintended side effects
@@ -213,22 +213,18 @@ def test_module_main(
     monkeypatch.setenv(TWILIO_NUMBER, "+1234567890")
     create_message_mock = mocker.patch("twilio.rest.api.v2010.account.message.MessageList.create")
 
-    mocker.patch(
-        "argparse.ArgumentParser.parse_args",
-        return_value=Namespace(
-            participants_path=test_participants_file_path,
-            env_path="",
-            logging_level="info",
-            dry_run=dry_run,
-            show_arrangement=show_arrangement,
-        ),
-    )
-
-    num_of_participants = len(json.loads(test_participants_file_path.read_text("utf-8")))
+    num_of_participants = len(json.loads(test_participants_file_path.read_text(ENCODING)))
     # TODO: Capture the output and check the "->" of the show arrangement appears in the log
     #  in case it is True / if "Dry run" appears in the log in case it is a dry run.
     assert (
-        secret_santa.secret_santa_module.main() == 0
+        app.run(
+            participants_path=test_participants_file_path,
+            env_path=Path(".env"),
+            logging_level=LoggingLevel.info,
+            dry_run=dry_run,
+            show_arrangement=show_arrangement,
+        )
+        == 0
     ), "The module main did not return a zero exit status as expected."
     if dry_run:
         create_message_mock.assert_not_called()
