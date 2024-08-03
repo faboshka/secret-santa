@@ -2,21 +2,18 @@
 
 import copy
 import json
-import logging
 import os
 import random
-import time
 from os import PathLike
 from pathlib import Path
 from typing import Optional
 
-import pyfiglet
 from dotenv import load_dotenv
 
 from secret_santa.const import MINIMUM_NUMBER_OF_PARTICIPANTS, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER
 from secret_santa.model.participant import Participant
 from secret_santa.twilio_messaging_service import TwilioMessagingService
-from secret_santa.util import arg_parser, file, misc, path
+from secret_santa.util import file, misc, path
 from secret_santa.util import logging as logging_util
 
 # Set up the main logger
@@ -219,32 +216,3 @@ def load_env(dotenv_path: Optional[PathLike] = None, override_system: bool = Fal
         environment_err = f"One or more of the environment variables needed ({required_env_vars}) has not been passed."
         raise SystemExit(environment_err)
     logger.info("Environment loaded successfully")
-
-
-def main() -> int:
-    """The module's main function.
-
-    Returns:
-        Zero in case the ``SecretSanta`` class is initialized and run as should be, non-Zero code otherwise.
-
-    """
-    secret_santa_figlet = pyfiglet.figlet_format("Secret  Santa")
-    print(secret_santa_figlet)  # noqa: T201
-    time.sleep(0.5)
-    # Parse the provided arguments
-    parser = arg_parser.get_secret_santa_argument_parser()
-    args = parser.parse_args()
-    # Get the root logger and update its level to set the main logging level
-    logging.getLogger().setLevel(logging_util.logging_levels.get(args.logging_level, "info"))
-    # Load the environment
-    load_env(args.env_path)
-    # Initialize the Secret Santa module and run it to send a message to the participants
-    return SecretSanta(
-        participants_json_path=args.participants_path,
-        show_arrangement=args.show_arrangement,
-        dry_run=args.dry_run,
-    ).run()
-
-
-if __name__ == "__main__":
-    main()

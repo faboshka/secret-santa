@@ -13,6 +13,7 @@ python = "^3.12"
 python-dotenv = "^1.0.1"
 twilio = "^9.2.3"
 pyfiglet = "^1.0.2"
+typer-slim = { version = "^0.12.3", extras = ["standard"] }
 
 [tool.poetry.group.dev.dependencies]
 taskipy = "^1.13.0"
@@ -28,6 +29,9 @@ pytest-lazy-fixtures = "^1.1.1"
 [build-system]
 requires = ["poetry-core>=1.8.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+secret_santa = "secret_santa.client.app:secret_santa_app"
 
 [tool.ruff]
 line-length = 120
