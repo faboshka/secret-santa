@@ -19,10 +19,14 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "taskipy>=1.14.1,<2.0.0",
+    { include-group = "lint" },
+    { include-group = "test" },
+]
+lint = [
     "mypy>=1.19.0,<2.0.0",
     "ruff>=0.14.8,<0.15.0",
-    "taskipy>=1.14.1,<2.0.0",
-    {include-group = "test" }
+
 ]
 test = [
     "pytest>=9.0.2,<10.0.0",

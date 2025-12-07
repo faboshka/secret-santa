@@ -599,6 +599,10 @@ dev = [
     { name = "ruff" },
     { name = "taskipy" },
 ]
+lint = [
+    { name = "mypy" },
+    { name = "ruff" },
+]
 test = [
     { name = "pytest" },
     { name = "pytest-lazy-fixtures" },
@@ -624,6 +628,10 @@ dev = [
     { name = "pytest-xdist", specifier = ">=3.8.0,<4.0.0" },
     { name = "ruff", specifier = ">=0.14.8,<0.15.0" },
     { name = "taskipy", specifier = ">=1.14.1,<2.0.0" },
+]
+lint = [
+    { name = "mypy", specifier = ">=1.19.0,<2.0.0" },
+    { name = "ruff", specifier = ">=0.14.8,<0.15.0" },
 ]
 test = [
     { name = "pytest", specifier = ">=9.0.2,<10.0.0" },
