@@ -2,7 +2,6 @@
 
 import logging
 from enum import StrEnum, auto
-from typing import Optional
 
 
 class LoggingLevel(StrEnum):
@@ -36,7 +35,7 @@ class CustomLogFormatter(logging.Formatter):
         """Override ``logging.Formatter.format`` to add a custom log message format."""
         record.message = record.getMessage()
         location = f"{record.module}.{record.name}().{record.funcName}"
-        msg = f'{f"[{record.levelname}]".ljust(10)} {location.ljust(39)} : {record.message}'
+        msg = f"{f'[{record.levelname}]'.ljust(10)} {location.ljust(39)} : {record.message}"
         record.msg = msg
         return super().format(record)
 
@@ -55,8 +54,8 @@ def get_common_handler() -> logging.Handler:
 
 
 def get_logger(
-    name: Optional[str] = None,
-    handlers: Optional[list[logging.Handler]] = None,
+    name: str | None = None,
+    handlers: list[logging.Handler] | None = None,
     add_common_handler: bool = True,
 ) -> logging.Logger:
     """Get a logger named according to the ``name`` and attach the handlers passed from the caller to it.

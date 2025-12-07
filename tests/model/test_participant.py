@@ -4,12 +4,12 @@ from pytest_lazy_fixtures import lf
 from secret_santa.model.participant import Participant
 
 
-@pytest.fixture()
+@pytest.fixture
 def participant_john() -> Participant:
     return Participant(full_name="John Doe", phone_number="+123456789")
 
 
-@pytest.fixture()
+@pytest.fixture
 def participant_john_nicknamed_johnny() -> Participant:
     # Same details as participant_john() but with a nickname
     return Participant(full_name="John Doe", phone_number="+123456789", nickname="Johnny")
