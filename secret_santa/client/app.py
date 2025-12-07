@@ -2,7 +2,7 @@
 
 import time
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import pyfiglet
 from typer import Option, Typer
@@ -25,7 +25,7 @@ secret_santa_app = Typer(
 @secret_santa_app.command(help="run the secret santa game", no_args_is_help=True)
 def run(
     participants_path: Annotated[Path, Option(..., help="path to the 'Secret Santa' participants JSON")],
-    env_path: Annotated[Optional[Path], Option(..., help="path to the 'Secret Santa' environment")] = None,
+    env_path: Annotated[Path | None, Option(..., help="path to the 'Secret Santa' environment")] = None,
     show_arrangement: Annotated[
         bool,
         Option(

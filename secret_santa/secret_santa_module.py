@@ -6,7 +6,6 @@ import os
 import random
 from os import PathLike
 from pathlib import Path
-from typing import Optional
 
 from dotenv import load_dotenv
 
@@ -35,7 +34,7 @@ class SecretSanta:
 
     def __init__(
         self,
-        participants_json_path: Optional[PathLike] = None,
+        participants_json_path: PathLike | None = None,
         *,
         show_arrangement: bool = False,
         dry_run: bool,
@@ -165,7 +164,7 @@ class SecretSanta:
         participants_derangement = self.get_participants_derangement()
         # Go over the participants and recipients in the participants and participants_derangement lists respectively,
         # and send the participant a customized message
-        for participant, recipient in zip(self.participants, participants_derangement):
+        for participant, recipient in zip(self.participants, participants_derangement, strict=True):
             if self.show_arrangement:
                 self.logger.info(
                     f"{SecretSanta.get_participant_message_name(participant)} -> "
@@ -180,7 +179,7 @@ class SecretSanta:
         return 0
 
 
-def load_env(dotenv_path: Optional[PathLike] = None, override_system: bool = False) -> None:
+def load_env(dotenv_path: PathLike | None = None, override_system: bool = False) -> None:
     """Check whether the environment has been configured correctly and the secrets needed has been passed.
 
     Args:

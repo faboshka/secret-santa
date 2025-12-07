@@ -2,7 +2,6 @@
 
 import os
 import re
-from typing import Optional
 
 from attr import dataclass
 from twilio.rest import Client
@@ -37,7 +36,7 @@ class TwilioMessagingService:
 
     """
 
-    def __init__(self, alphanumeric_id: Optional[str] = None) -> None:
+    def __init__(self, alphanumeric_id: str | None = None) -> None:
         """Initialize the Twilio messaging service.
 
         Args:
@@ -99,8 +98,7 @@ class TwilioMessagingService:
 
         # Assert the environment variables needed are present
         assert all([twilio_account_sid, twilio_auth_token, twilio_number]), (
-            f"Required environment variables {TWILIO_ACCOUNT_SID} or {TWILIO_AUTH_TOKEN} "
-            f"or {TWILIO_NUMBER} missing."
+            f"Required environment variables {TWILIO_ACCOUNT_SID} or {TWILIO_AUTH_TOKEN} or {TWILIO_NUMBER} missing."
         )
 
         return twilio_number, twilio_account_sid, twilio_auth_token  # type: ignore

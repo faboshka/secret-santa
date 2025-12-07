@@ -1,5 +1,5 @@
 import itertools
-from typing import Callable, Optional
+from collections.abc import Callable
 
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
@@ -10,11 +10,11 @@ from secret_santa.const import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUM
 from secret_santa.twilio_messaging_service import MessageResponse, TwilioMessagingService
 
 
-@pytest.fixture()
+@pytest.fixture
 def twilio_messaging_service_builder(
     monkeypatch: MonkeyPatch,
-) -> Callable[[Optional[str]], TwilioMessagingService]:
-    def _builder(alphanumeric_id: Optional[str] = None) -> TwilioMessagingService:
+) -> Callable[[str | None], TwilioMessagingService]:
+    def _builder(alphanumeric_id: str | None = None) -> TwilioMessagingService:
         monkeypatch.setenv(TWILIO_ACCOUNT_SID, "DummyValue1")
         monkeypatch.setenv(TWILIO_AUTH_TOKEN, "DummyValue2")
         monkeypatch.setenv(TWILIO_NUMBER, "DummyValue3")
@@ -23,16 +23,16 @@ def twilio_messaging_service_builder(
     return _builder
 
 
-@pytest.fixture()
+@pytest.fixture
 def twilio_messaging_service_alphanumeric_id_secret_santa(
-    twilio_messaging_service_builder: Callable[[Optional[str]], TwilioMessagingService],
+    twilio_messaging_service_builder: Callable[[str | None], TwilioMessagingService],
 ) -> TwilioMessagingService:
     return twilio_messaging_service_builder("SecretSanta")
 
 
-@pytest.fixture()
+@pytest.fixture
 def twilio_messaging_service(
-    twilio_messaging_service_builder: Callable[[Optional[str]], TwilioMessagingService],
+    twilio_messaging_service_builder: Callable[[str | None], TwilioMessagingService],
 ) -> TwilioMessagingService:
     return twilio_messaging_service_builder(None)
 
@@ -83,9 +83,9 @@ def test_load_twilio_config(mocker: MockerFixture, monkeypatch: MonkeyPatch) -> 
     twilio_messaging_service = TwilioMessagingService()
 
     twilio_client_init_mock.assert_called_with(username="DummyValue1", password="DummyValue2")
-    assert (
-        twilio_messaging_service.twilio_number == "DummyValue3"
-    ), f"The Twilio phone number (a.k.a. {TWILIO_NUMBER}) was not loaded in TwilioMessagingService as expected."
+    assert twilio_messaging_service.twilio_number == "DummyValue3", (
+        f"The Twilio phone number (a.k.a. {TWILIO_NUMBER}) was not loaded in TwilioMessagingService as expected."
+    )
 
 
 @pytest.mark.parametrize("alphanumeric_id", [None, "SecretSanta", "123123Drink", "Test Spaces"])

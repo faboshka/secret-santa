@@ -31,47 +31,47 @@ def _clear_environment(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {**github_env_variables}, clear=True)
 
 
-@pytest.fixture()
+@pytest.fixture
 def test_env_file_path(tests_directory: Path) -> Path:
     return tests_directory / "data" / "example.env"
 
 
-@pytest.fixture()
+@pytest.fixture
 def invalid_test_env_file(tests_directory: Path) -> Path:
     return tests_directory / "data" / "invalid_example.env"
 
 
-@pytest.fixture()
+@pytest.fixture
 def test_participants_file_path(tests_directory: Path) -> Path:
     return tests_directory / "data" / "participants_example.json"
 
 
-@pytest.fixture()
+@pytest.fixture
 def participant_john_jd_doe() -> Participant:
     return Participant(full_name="John Doe", phone_number="+1234567890", nickname="J.D.")
 
 
-@pytest.fixture()
+@pytest.fixture
 def participant_john_johnny_doe() -> Participant:
     return Participant(full_name="John Doe", phone_number="+1234567890", nickname="Johnny")
 
 
-@pytest.fixture()
+@pytest.fixture
 def participant_jane_doe() -> Participant:
     return Participant(full_name="Jane Doe", phone_number="+0987654321")
 
 
-@pytest.fixture()
+@pytest.fixture
 def participant_richard_rich_roe() -> Participant:
     return Participant(full_name="Richard Roe", phone_number="+1234509876", nickname="Rich")
 
 
-@pytest.fixture()
+@pytest.fixture
 def participant_howard() -> Participant:
     return Participant(full_name="Howard", phone_number="+1234509876")
 
 
-@pytest.fixture()
+@pytest.fixture
 def participants_in_participants_file(
     participant_john_johnny_doe: Participant,
     participant_jane_doe: Participant,
@@ -84,7 +84,7 @@ def participants_in_participants_file(
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def default_secret_santa_instance(
     monkeypatch: MonkeyPatch,
     test_participants_file_path: Path,
@@ -101,15 +101,15 @@ def test_version() -> None:
 
 def test_load_env_with_env_file(monkeypatch: MonkeyPatch, test_env_file_path: Path) -> None:
     load_env(test_env_file_path)
-    assert (
-        os.getenv(TWILIO_ACCOUNT_SID) == "DummyTwilioAccountSIDValue"
-    ), f"The environment variable {TWILIO_ACCOUNT_SID} value loaded does not match the expected value."
-    assert (
-        os.getenv(TWILIO_AUTH_TOKEN) == "DummyTwilioAuthToken"
-    ), f"The environment variable {TWILIO_AUTH_TOKEN} value loaded does not match the expected value."
-    assert (
-        os.getenv(TWILIO_NUMBER) == "+1234567890"
-    ), f"The environment variable {TWILIO_NUMBER} value loaded does not match the expected value."
+    assert os.getenv(TWILIO_ACCOUNT_SID) == "DummyTwilioAccountSIDValue", (
+        f"The environment variable {TWILIO_ACCOUNT_SID} value loaded does not match the expected value."
+    )
+    assert os.getenv(TWILIO_AUTH_TOKEN) == "DummyTwilioAuthToken", (
+        f"The environment variable {TWILIO_AUTH_TOKEN} value loaded does not match the expected value."
+    )
+    assert os.getenv(TWILIO_NUMBER) == "+1234567890", (
+        f"The environment variable {TWILIO_NUMBER} value loaded does not match the expected value."
+    )
     monkeypatch.delenv(TWILIO_ACCOUNT_SID, raising=False)
     monkeypatch.delenv(TWILIO_AUTH_TOKEN, raising=False)
     monkeypatch.delenv(TWILIO_NUMBER, raising=False)
@@ -167,9 +167,9 @@ def test_env_file_value_override_existing(
         monkeypatch.setenv(env_key, env_value)
     load_env(dotenv_path=test_env_file_path, override_system=override_system)
     for expected_env_key, expected_env_value in expected:
-        assert (
-            os.getenv(expected_env_key) == expected_env_value
-        ), f"The environment variable {expected_env_key} value loaded does not match the expected value."
+        assert os.getenv(expected_env_key) == expected_env_value, (
+            f"The environment variable {expected_env_key} value loaded does not match the expected value."
+        )
 
 
 def test_load_env_without_env_file_no_env(mocker: MockerFixture) -> None:
@@ -229,9 +229,9 @@ def test_module_main(
     if dry_run:
         create_message_mock.assert_not_called()
     else:
-        assert (
-            create_message_mock.call_count == num_of_participants
-        ), f"The `create` method of the Twilio API was not called the number of times expected {num_of_participants}."
+        assert create_message_mock.call_count == num_of_participants, (
+            f"The `create` method of the Twilio API was not called the number of times expected {num_of_participants}."
+        )
 
 
 @pytest.mark.parametrize(
@@ -260,11 +260,11 @@ def test_init(
     )
 
     assert secret_santa_obj.logger.name == "SecretSanta", "The logger was not initialized with the proper name."
-    assert (
-        secret_santa_obj.dry_run == dry_run
-    ), 'The value initialized in the object for "dry_run" does not match the expected value.'
+    assert secret_santa_obj.dry_run == dry_run, (
+        'The value initialized in the object for "dry_run" does not match the expected value.'
+    )
     assert secret_santa_obj.show_arrangement == show_arrangement, (
-        'The value initialized in the object for "show_arrangement" does not match the ' "expected value."
+        'The value initialized in the object for "show_arrangement" does not match the expected value.'
     )
     assert secret_santa_obj.messaging_client is not None, "The messaging service was not initialized as expected."
 
@@ -292,9 +292,9 @@ def test_init_defaults(
 
     path_join_mock.assert_called()
     load_participants_mock.assert_called_once_with(participants_json_path=project_root_directory / "participants.json")
-    assert (
-        secret_santa_obj.show_arrangement is False
-    ), "The default value for show_arrangement does not match the expected value."
+    assert secret_santa_obj.show_arrangement is False, (
+        "The default value for show_arrangement does not match the expected value."
+    )
 
 
 def test_load_participants(
@@ -304,9 +304,9 @@ def test_load_participants(
 ) -> None:
     loaded_participants = default_secret_santa_instance.load_participants(test_participants_file_path)
 
-    assert (
-        loaded_participants == participants_in_participants_file
-    ), "The list of participants loaded does not match the expected list of participants."
+    assert loaded_participants == participants_in_participants_file, (
+        "The list of participants loaded does not match the expected list of participants."
+    )
 
 
 @pytest.mark.parametrize(
@@ -385,8 +385,7 @@ def test_run(
     assert secret_santa_obj.run() == 0
 
     assert send_message_spy.call_count == len(secret_santa_obj.participants), (
-        f"The class' `send_message` was not called the number of times expected "
-        f"({len(secret_santa_obj.participants)})."
+        f"The class' `send_message` was not called the number of times expected ({len(secret_santa_obj.participants)})."
     )
     if dry_run:
         create_message_mock.assert_not_called()
