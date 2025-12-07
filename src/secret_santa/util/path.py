@@ -11,4 +11,4 @@ def get_project_root() -> Path:
 
     """
     # The root directory is two levels above this file
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parents[3]

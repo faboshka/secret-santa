@@ -26,7 +26,6 @@ dev = [
 lint = [
     "mypy>=1.19.0,<2.0.0",
     "ruff>=0.14.8,<0.15.0",
-
 ]
 test = [
     "pytest>=9.0.2,<10.0.0",
@@ -82,8 +81,8 @@ select = [
 ]
 ignore = [
     "G004",
-    "TC002", # TODO: Enable
-    "TC003", # TODO: Enable
+    "TC002", # TODO: Enable?
+    "TC003", # TODO: Enable?
 ]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
@@ -115,8 +114,8 @@ module = ["pyfiglet", "twilio.rest.*"]
 ignore_missing_imports = true
 
 [tool.taskipy.variables]
-all_paths = "secret_santa/ tests/"
-sources_only = "secret_santa/"
+all_paths = "src/secret_santa/ tests/"
+sources_only = "src/secret_santa/"
 tests_only = "tests/"
 
 [tool.taskipy.tasks]

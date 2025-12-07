@@ -207,7 +207,7 @@ def load_env(dotenv_path: PathLike | None = None, override_system: bool = False)
 
     load_dotenv(dotenv_path=dotenv_path, override=override_system)
 
-    # Make sure the needed Twilio configuration environment variables are provided
+    # Make sure the necessary Twilio configuration environment variables are provided
     logger.debug("Asserting Twilio configuration has been provided")
     required_env_vars = [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER]
     if not all(os.getenv(env) for env in required_env_vars):
